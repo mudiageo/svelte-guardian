@@ -27,7 +27,7 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(cuid())
+   id           String   @id @default(cuid())
   userId       String
   expires      DateTime
   sessionToken String   @unique

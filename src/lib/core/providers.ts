@@ -62,11 +62,11 @@ export function createProviders(
         if (!user) {
           throw new Error('User not found');
         }
- const isValidPassword = await verifyPassword(user.password, password);
+      const isValidPassword = await verifyPassword(user.password, password);
  
  if(!isValidPassword)  return null
  
-        // Password validation would happen here with proper hashing
+         // Password validation would happen here with proper hashing
         return {
           id: user.id,
           email: user.email,

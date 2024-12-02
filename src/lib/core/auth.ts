@@ -33,6 +33,7 @@ export class GuardianAuth {
 
     // Initialize logger
     this.logger = createLogger(this.config.logging);
+    
   }
 
   // Create authentication providers
@@ -45,49 +46,61 @@ export class GuardianAuth {
     return createMiddleware(this.config.security);
   }
   private getAdapter() {
-    return getAdapter(this.config);
+    return getAdapter(this.config.database);
   }
 
   // Initialize authentication
-  public init() {
+  public async init() {
     const providers = this.createProviders();
     const adapter = this.getAdapter();
-    const middleware = this.createMiddleware();
+   const middleware = this.createMiddleware();
    const secret = AUTH_SECRET
     // Log initialization
     this.logger.info('Initializing Svelte Guardian Auth', {
       providers: providers.map(p => p.name),
       securityLevel: this.config.security.level
     });
-
-    return {
-      ...SvelteKitAuth(event => {
-      return {
+    const event = null
+    
+const response = await SvelteKitAuth( event => {
+  
+  return {
         adapter,
         providers,
         events: createEventHandlers(this.config.events, this.logger),
         callbacks: {
-          async session({ session, user }) {
-            console.error(hey)
-            console.log("session")
-            console.log(session)
-            console.log("user")
-            console.log(user)
+       async session({ session, user }) {
+          try{
             session.user.id = user.id;
             session.user.role = user.role;
+          
             return session;
+            
+          } catch(e){
+            console.log(e)
+          }
           }, 
-          async signIn({ user, credentials }) { 
-            if (credentials && credentials.username && credentials.password) {
-                   if (user) {
-                       console.log(user)
-                    console.log("user")
+      async signIn({ user, credentials }) {
+                // Check if this sign in callback is being called in the credentials authentication flow.
+                // If so,  create a session entry in the database
+                if (credentials && credentials.email && credentials.password) {
+                    if (user) {
+
+                      const sessionToken = crypto.randomUUID();
+                        // Set expiry to 30 days
+                        const sessionExpiry = new Date(Date.now() + 60 * 60 * 24 * 30 * 1000);
+                      console.log("sesiion created")
+                        event.cookies.set('authjs.session-token', sessionToken, {
+                            expires: sessionExpiry,
+                            path: '/'
+           });
                     }
                 }
 
                 return true;
-            },
-         async jwt: {
+            }
+        },
+        jwt: {
             // Add a callback to the encode method to return the session token from a cookie
             // when in the credentials provider callback flow.
             encode: async (params) => {
@@ -97,8 +110,7 @@ export class GuardianAuth {
                     event.request.method === 'POST'
                 ) {
                     // Get the session token cookie
-                    const cookie = event.cookies.get('next-auth.session-token');
-
+                    const cookie = event.cookies.get('authjs.session-token');
                     // Return the cookie value, or an empty string if it is not defined
                     return cookie ?? '';
                 }
@@ -118,8 +130,6 @@ export class GuardianAuth {
                 return decode(params);
             }
         },
-        
-        },
         session: {
             strategy: 'database',
             maxAge: 60 * 60 * 24 * 30, // 30 days
@@ -127,9 +137,20 @@ export class GuardianAuth {
             generateSessionToken: () => {
                 return crypto.randomUUID();
             }
-        }
-      } 
-      }),
+        },
+        debug:true,
+        secret
+      }
+      
+      })
+ const handle = async ({event, resolve}) => {
+  event.cookies.set("me", "john", {path:'/'})
+
+  return response.handle({event, resolve})
+}
+    return {
+      ...response,
+      handle,
       middleware
     };
   }

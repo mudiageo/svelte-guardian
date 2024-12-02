@@ -1,6 +1,6 @@
 import { guardianAuth } from '$lib';
 
-export const {handle, middleware, signIn, signOut} = guardianAuth({
+export const { handle, signIn, signOut, middleware} = await guardianAuth({
   providers: {
     google: {
       enabled: true,

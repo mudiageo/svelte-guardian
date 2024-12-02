@@ -1,8 +1,9 @@
-# 🔐 SvelteForge Auth
-Patr
-Powerful, flexible authentication for SvelteKit applications.
+# 🔐 Svelte Guardian
+
+Batteries included  authentication for SvelteKit applications.
 
 ## 🚀 Features
+- Secure credentuals authentication
 - Multiple authentication providers
 - Robust security measures
 - Flexible configuration
@@ -12,15 +13,15 @@ Powerful, flexible authentication for SvelteKit applications.
 ## 📦 Installation
 
 ```bash
-npm install svelte-forge-auth
+npm install svelte-guardian
 ```
 
 ## 🔧 Basic Usage
 
 ```typescript
-import { forgeAuth } from 'svelte-forge-auth';
+import { guardianAuth } from 'svelte-guardian';
 
-export const { GET, POST } = forgeAuth({
+export const { handle } = guardianAuth({
   providers: {
     google: { enabled: true },
     credentials: { enabled: true }
@@ -33,7 +34,7 @@ export const { GET, POST } = forgeAuth({
 ```
 
 ## 📄 Documentation
-[Full documentation available here]
+[Full documentation to be made available here]
 
 ## 🤝 Contributing
 [Contribution guidelines]

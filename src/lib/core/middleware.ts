@@ -16,7 +16,7 @@ export function createMiddleware(
           : [];
  protectedRoutes = securityConfig.protectedRoutes || protectedRoutes
  
- console.log(session)
+ console.log("session ", session)
  
     const path = event.url.pathname;
     const Location = securityConfig.redirectUrl || '/login'
