@@ -12,9 +12,27 @@
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint .",
 		"test:unit": "vitest",
-		"test": "npm run test:unit -- --run && npm run test:e2e",
+		"test": "npm run test:unit -- --run",
 		"test:e2e": "playwright test"
 	},
+	"keywords": [
+		"svelte",
+		"sveltekit",
+		"authentication",
+		"prisma",
+		"database"
+	],
+	"author": "Mudia Geo",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/mudiageo/svelte-guardian.git"
+	},
+	"bugs": {
+		"url": "https://github.com/mudiageo/svelte-guardian/issues"
+	},
+	"homepage": "https://github.com/mudiageo/svelte-guardian#readme",
+
 	"files": [
 		"dist",
 		"!dist/**/*.test.*",
