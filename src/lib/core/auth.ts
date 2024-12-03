@@ -90,6 +90,12 @@ const response = SvelteKitAuth( (event : RequestEvent) => {
                       const sessionToken = crypto.randomUUID();
                         // Set expiry to 30 days
                         const sessionExpiry = new Date(Date.now() + 60 * 60 * 24 * 30 * 1000);
+                        await adapter.createSession({
+                            sessionToken: sessionToken,
+                            userId: user.id,
+                            expires: sessionExpiry
+                        });
+
                       console.log("sesiion created")
                         event.cookies.set('authjs.session-token', sessionToken, {
                             expires: sessionExpiry,

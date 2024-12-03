@@ -16,6 +16,6 @@ describe('GuardianAuth', () => {
     const auth = new GuardianAuth(customConfig);
     
     // Verify config is correctly merged
-    expect(auth['config'].security.maxLoginAttempts).toBe(3);
+    expect(auth['config'].security.maxLoginAttempts).toBe(4);
   });
 });

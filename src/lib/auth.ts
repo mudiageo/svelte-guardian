@@ -7,7 +7,7 @@ export const { handle, signIn, signOut, middleware, createUser } = await guardia
 			strict: true
 		},
 		credentials: {
-			enabled: true,
+			additionalUserFields: ['role'],
 			allowRegistration: true
 		}
 	},
@@ -15,7 +15,9 @@ export const { handle, signIn, signOut, middleware, createUser } = await guardia
 		maxLoginAttempts: 5,
 		lockoutDuration: 15 * 60 * 1000, // 15 minutes
 		requireEmailVerification: true,
-		protectedRoutes: ['/admin', '/protect'],
-		redirectUrl: '/'
+		routeProtection: {
+			protectedRoutes: ['/protect','/admin'],
+			unauthorizedRedirect: '/'
+		}
 	}
 } satisfies GuardianAuthConfig);

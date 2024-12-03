@@ -38,7 +38,9 @@ export function createProviders(
   }
 
   // Credentials Provider
-  if (providerConfig.credentials?.enabled) {
+  if (providerConfig.credentials?.enabled !== false) {
+  const config: GuardianAuthConfig["providers"]["credentials"] = providerConfig.credentials
+
     providers.push(CredentialsProvider({
       name: 'Credentials',
       credentials: {
@@ -51,7 +53,7 @@ export function createProviders(
         // Validate credentials
         const isValidCredentials = validateCredentials(email, password)
         if(!isValidCredentials){
-          console.log(isValid)
+          console.log(isValidCredentials)
           throw new Error('Invalid credentials');
         }
 
@@ -67,12 +69,23 @@ export function createProviders(
  
  if(!isValidPassword)  return null
  
+  // Prepare user object for session
+  const sessionUser = {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+  }
+
+  // Add custom fields if specified
+  if (config?.additionalUserFields) {
+    config.additionalUserFields.forEach(field => {
+      if (user[field] !== undefined) {
+        sessionUser[field] = user[field]
+      }
+    })
+  }
          // Password validation would happen here with proper hashing
-        return {
-          id: user.id,
-          email: user.email,
-          role: user.role
-        };
+        return sessionUser
       }
     }));
   }

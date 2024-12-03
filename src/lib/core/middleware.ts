@@ -16,6 +16,7 @@ export function createMiddleware(
           : [];
  protectedRoutes = securityConfig.routeProtection?.protectedRoutes || protectedRoutes
  
+ //Implement Role base guarding
  
     const path = event.url.pathname;
     const Location = securityConfig.routeProtection?.unauthorizedRedirect || '/login'
