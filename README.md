@@ -218,14 +218,45 @@ export const { handle } = guardianAuth({
   }
 });
 ```
+## Note:
+To use this library, use must use prisma 
+Plans are in place to migrate from this prisma-centric approach. In the meantime, check out the example schema in src/prisma/schema.prisma.
+
+## Roadmap and Feature Planning
+Immediate Priorities (v0.2.0)
+ Role-based Route Protection
+ Custom Event Handlers
+ Logging System
+ Multi-Database Provider Support
+ Comprehensive Documentation
+ Robust Error Handling Middleware
+ Customizable Password Policies
+
+Short-term Goals (v0.3.0)
+ Rate Limiting and Brute Force Protection
+ Social Account Linking
+ Additional Authentication Providers
+
+ GitHub OAuth
+ Microsoft OAuth
+ Facebook OAuth
+ Custom SAML Provider
+
+
+ Two-Factor Authentication (2FA)
+ Advanced Logging and Audit Trail
+ Comprehensive Test Suite
+
+Mid-term Goals (v0.4.0)
+ Advanced Role and Permission Management
+ Internationalization (i18n) Support
 
 ## 🛠 TODO
-- [ ] Implement logging
 - [ ] Implement two factor auth, rate limiting, refresh token rotation
-- [ ] Implement password security configuration
-- [ ] Implement createUser function and handle registration internally
+- [ ] Implement password policies configuration
+- [ ] Migrate from prisma-centric approach
 - [ ] Create comprehensive documentation site
-- [ ] Add more authentication providers
+- [ ] Add more authentication providers and database providers
 - [ ] Implement more granular role-based access control
 - [ ] Develop admin dashboard for user management
 
