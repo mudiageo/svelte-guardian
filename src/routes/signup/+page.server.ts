@@ -1,6 +1,6 @@
 import type { Actions } from './$types';
 import { PrismaClient } from '@prisma/client';
-import { hashPassword } from '$lib'
+import { createUser } from '$lib/auth'
 const prisma = new PrismaClient();
 
 export const actions = {
@@ -13,26 +13,22 @@ export const actions = {
 
 	
 
-	try {
-		const hashedPassword = await hashPassword(password);
-		
-		const user = await prisma.user.create({
-			data: {
+	try {		
+		const user = await createUser({
 				email,
 				name,
 				role:"user",
-				password: hashedPassword
-			}
-		});
+				password
+			});
 		
 		return { success: true, user: { id: user.id, email: user.email, name: user.name } }
 		
 	} catch (error) {
 		console.error('Signup failed:', error);
 		return {success : false} 
-}
+	}
 		// TODO log the user in
 	}
 } satisfies Actions;
 
- 
+	

@@ -14,12 +14,11 @@ export function createMiddleware(
         : securityConfig.level === 'moderate' 
           ? ['/dashboard', '/profile'] 
           : [];
- protectedRoutes = securityConfig.protectedRoutes || protectedRoutes
+ protectedRoutes = securityConfig.routeProtection?.protectedRoutes || protectedRoutes
  
- console.log("session ", session)
  
     const path = event.url.pathname;
-    const Location = securityConfig.redirectUrl || '/login'
+    const Location = securityConfig.routeProtection?.unauthorizedRedirect || '/login'
     if (protectedRoutes.some(route => path.startsWith(route))) {
       if (!session) {
         return new Response(null, {
@@ -34,20 +33,20 @@ export function createMiddleware(
 
   const securityHeadersMiddleware: Handle = async ({ event, resolve }) => {
     // Apply security headers based on config level
-    // const headers: Record<string, string> = {
-    //   'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
-    //   'X-Frame-Options': 'DENY',
-    //   'X-Content-Type-Options': 'nosniff'
-    // };
+    const headers: Record<string, string> = {
+      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+      'X-Frame-Options': 'DENY',
+      'X-Content-Type-Options': 'nosniff'
+    };
 
-    // if (securityConfig.level === 'strict') {
-    //   headers['Content-Security-Policy'] = 
-    //     "default-src 'self'; script-src 'self' 'unsafe-inline'";
-    // }
+    if (securityConfig.level === 'strict') {
+      headers['Content-Security-Policy'] = 
+        "default-src 'self'; script-src 'self' 'unsafe-inline'";
+    }
 
-    // Object.entries(headers).forEach(([key, value]) => {
-    //   event.setHeaders({ [key]: value });
-    // });
+    Object.entries(headers).forEach(([key, value]) => {
+      event.setHeaders({ [key]: value });
+    });
 
     return resolve(event);
   };

@@ -1,1 +1,5 @@
-export type { User } from '@prisma/client'
+import type { User } from '@prisma/client';
+
+export interface ExtendedUser extends User {
+  role?: string
+}

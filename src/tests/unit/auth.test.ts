@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { ForgeAuth } from '../../src/core/auth';
+import { GuardianAuth } from '../../lib/core/auth';
 
-describe('ForgeAuth', () => {
+describe('GuardianAuth', () => {
   it('should initialize with default config', () => {
-    const auth = new ForgeAuth();
+    const auth = new GuardianAuth();
     expect(auth).toBeDefined();
   });
 
@@ -13,7 +13,7 @@ describe('ForgeAuth', () => {
         maxLoginAttempts: 3
       }
     };
-    const auth = new ForgeAuth(customConfig);
+    const auth = new GuardianAuth(customConfig);
     
     // Verify config is correctly merged
     expect(auth['config'].security.maxLoginAttempts).toBe(3);

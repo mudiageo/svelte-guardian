@@ -1,7 +1,7 @@
 import type { Handle } from '@sveltejs/kit';
+import type { AuthConfig } from '@auth/core/types';
 import { SvelteKitAuth } from '@auth/sveltekit';
 import { encode, decode } from '@auth/core/jwt';
-import { adapter } from '../adapter';
 import { 
   createProviders, 
   type AuthProvider 
@@ -19,9 +19,11 @@ import {
 } from '../types/config';
 import { createLogger } from './logger';
 import { AUTH_SECRET } from '$env/static/private';
+import { hashPassword } from '../utils/security.js';
+import type { RequestEvent } from '../../routes/$types.js';
 
 export class GuardianAuth {
-  private config: GuatdianAuthConfig;
+  private config: GuardianAuthConfig;
   private logger;
 
   constructor(userConfig: Partial<GuardianAuthConfig> = {}) {
@@ -54,17 +56,16 @@ export class GuardianAuth {
     const providers = this.createProviders();
     const adapter = this.getAdapter();
    const middleware = this.createMiddleware();
-   const secret = AUTH_SECRET
+   const secret = AUTH_SECRET || crypto.randomUUID()
     // Log initialization
-    this.logger.info('Initializing Svelte Guardian Auth', {
+    this.logger.info('Initializing...', {
       providers: providers.map(p => p.name),
       securityLevel: this.config.security.level
     });
     const event = null
     
-const response = await SvelteKitAuth( event => {
-  
-  return {
+const response = SvelteKitAuth( (event : RequestEvent) => {
+  const authConfig : AuthConfig =  {
         adapter,
         providers,
         events: createEventHandlers(this.config.events, this.logger),
@@ -142,15 +143,30 @@ const response = await SvelteKitAuth( event => {
         secret
       }
       
+      return authConfig
       })
- const handle = async ({event, resolve}) => {
-  event.cookies.set("me", "john", {path:'/'})
 
-  return response.handle({event, resolve})
-}
-    return {
+      const createUser = async (data) => {
+        try {
+            const hashedPassword = await hashPassword(data.password)
+           const user = await adapter.createUser({...data, password: hashedPassword});
+		
+           const account = await adapter.linkAccount({
+              userId: user.id,
+              type: 'credentials',
+              provider: 'credentials',
+              providerAccountId: user.id
+          });
+           return user
+
+        } catch (error) {
+          this.logger.error("Unable to create user", error)
+        }
+      }
+      
+      return {
       ...response,
-      handle,
+      createUser,
       middleware
     };
   }
