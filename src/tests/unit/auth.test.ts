@@ -10,7 +10,7 @@ describe('GuardianAuth', () => {
   it('should merge user config with default config', () => {
     const customConfig = {
       security: {
-        maxLoginAttempts: 3
+        maxLoginAttempts: 4
       }
     };
     const auth = new GuardianAuth(customConfig);
