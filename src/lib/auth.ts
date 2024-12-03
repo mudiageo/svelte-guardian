@@ -1,8 +1,13 @@
+import { PrismaClient } from '@prisma/client'
+
+export const prisma = new PrismaClient()
+
 import { guardianAuth, type GuardianAuthConfig } from '$lib';
 
 export const { handle, signIn, signOut, middleware, createUser } = await guardianAuth({
+	database: {type: 'prisma', client: prisma},
 	providers: {
-		google: {
+	google: {
 			enabled: true,
 			strict: true
 		},

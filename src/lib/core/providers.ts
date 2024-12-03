@@ -5,12 +5,13 @@ import type { Provider } from '@auth/core/providers';
 import type { GuardianAuthConfig } from '../types/config';
 import { validateCredentials } from '../utils/validation';
 import { verifyPassword } from '../utils/security';
-import {prisma} from '../db';
+import { getUserByEmail } from '../database';
+import type { DatabaseConfig } from '$lib/database';
 
 export type AuthProvider = Provider;
 
 export function createProviders(
-  providerConfig: GuardianAuthConfig['providers']
+  providerConfig: GuardianAuthConfig['providers'], databaseConfig: DatabaseConfig
 ): AuthProvider[] {
   const providers: AuthProvider[] = [];
 
@@ -58,23 +59,21 @@ export function createProviders(
         }
 
         // Find user and verify password
-        const user = await prisma.user.findUnique({ 
-          where: { email } 
-        });
+        const user = await getUserByEmail(databaseConfig, email)
 
         if (!user) {
           throw new Error('User not found');
         }
       const isValidPassword = await verifyPassword(user.password, password);
  
- if(!isValidPassword)  return null
+      if(!isValidPassword)  return null
  
-  // Prepare user object for session
-  const sessionUser = {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-  }
+      // Prepare user object for session
+      const sessionUser = {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      }
 
   // Add custom fields if specified
   if (config?.additionalUserFields) {

@@ -1,13 +1,6 @@
-import { PrismaAdapter } from '@auth/prisma-adapter';
-import { prisma } from './db'
+import { createDatabaseAdapter, type  DatabaseConfig } from './database';
 
-export const getAdapter = (database = "prisma") => {
-  if (database === "prisma") {
-    const adapter = PrismaAdapter(prisma);
+export const getAdapter = async (config: DatabaseConfig) => {
+    const adapter = await createDatabaseAdapter(config);
     return adapter
-  }
-  else { 
-    console.error("Unsupported Database in config")
-    return {}
-  }
 } 

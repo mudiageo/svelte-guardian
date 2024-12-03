@@ -1,5 +1,6 @@
 import type { User } from './user';
 import type { LoggerConfig } from '../core/logger';
+import type { DatabaseConfig } from '../database';
 
 export interface ProviderConfig {
   enabled: boolean;
@@ -44,6 +45,7 @@ export interface EventHandlers {
 }
 
 export interface GuardianAuthConfig {
+  database: DatabaseConfig;
   providers: {
     google?: ProviderConfig;
     github?: ProviderConfig;

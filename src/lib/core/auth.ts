@@ -40,7 +40,7 @@ export class GuardianAuth {
 
   // Create authentication providers
   private createProviders(): AuthProvider[] {
-    return createProviders(this.config.providers);
+    return createProviders(this.config.providers, this.config.database);
   }
 
   // Create authentication middleware
@@ -54,7 +54,7 @@ export class GuardianAuth {
   // Initialize authentication
   public async init() {
     const providers = this.createProviders();
-    const adapter = this.getAdapter();
+    const adapter = await  this.getAdapter();
    const middleware = this.createMiddleware();
    const secret = AUTH_SECRET || crypto.randomUUID()
     // Log initialization
