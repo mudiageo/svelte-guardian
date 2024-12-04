@@ -1,6 +1,6 @@
 {
 	"name": "svelte-guardian",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "prisma generate && vite build && npm run package",
@@ -32,7 +32,6 @@
 		"url": "https://github.com/mudiageo/svelte-guardian/issues"
 	},
 	"homepage": "https://github.com/mudiageo/svelte-guardian#readme",
-
 	"files": [
 		"dist",
 		"!dist/**/*.test.*",
