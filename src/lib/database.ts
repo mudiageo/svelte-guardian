@@ -67,7 +67,9 @@ export type DatabaseConfig =
   | SupabaseConfig
 
 // Adapter creation utility
-export const createDatabaseAdapter = async (config: DatabaseConfig): Adapter => {
+export const createDatabaseAdapter = async (config: DatabaseConfig): Promise<Adapter | null> => {
+  if(!config) return null
+
   switch (config.type) {
     case 'prisma':
       const { PrismaAdapter } = await import('@auth/prisma-adapter')
@@ -107,10 +109,14 @@ export const createDatabaseAdapter = async (config: DatabaseConfig): Adapter => 
   }
 }
 // TODO Implement Database connection utility
-export const getUserByEmail = async (config: DatabaseConfig, email: string) => {
-    let user = {}
-    if(!email) return null
 
+export const getUserByEmail = async (config: DatabaseConfig, email: string) => {
+  if(!config) throw new Error('Database configuration is required')
+    
+  if(!email) return null
+  
+
+  let user = {}
   switch (config.type) {
     case 'prisma':
        user = await config.client.user.findUnique({ where: {email}})

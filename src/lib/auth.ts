@@ -24,5 +24,8 @@ export const { handle, signIn, signOut, middleware, createUser } = await guardia
 			protectedRoutes: ['/protect','/admin'],
 			unauthorizedRedirect: '/'
 		}
+	},
+	advanced: {
+		sessionStrategy: 'jwt'
 	}
 } satisfies GuardianAuthConfig);

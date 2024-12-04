@@ -62,26 +62,49 @@ export class GuardianAuth {
       providers: providers.map(p => p.name),
       securityLevel: this.config.security.level
     });
-    const event = null
-    
+//Checks
+
+let sessionStrategy = this.config.advanced?.sessionStrategy || 'database'
+
+//If session strategy is not set, and config databse is not set, default to jwt
+if(!this.config.advanced?.sessionStrategy && !this.config.database) {
+   sessionStrategy = 'jwt'
+}
+
+//If session strategy is databse rewuire databse config
+if(sessionStrategy === 'database' && !this.config.database) {
+    throw new Error("You must add a databse when setting sessionStrategy to 'database'")
+}
+
+
+
 const response = SvelteKitAuth( (event : RequestEvent) => {
   const authConfig : AuthConfig =  {
         adapter,
         providers,
         events: createEventHandlers(this.config.events, this.logger),
         callbacks: {
-       async session({ session, user }) {
-          try{
-            session.user.id = user.id;
-            session.user.role = user.role;
-          
-            return session;
+          async session(data) {
+            const { session, user } = data
+            console.log("sesson data",data)
+              session.user.id = user.id;
+              session.user.name = user.name;
+              session.user.role = user.role;
             
-          } catch(e){
-            console.log(e)
-          }
-          }, 
-      async signIn({ user, credentials }) {
+              return session;
+              
+            }, 
+            async jwt({ token, user }) {
+              if(user){
+                token.id = user.id;
+                token.name = user.name;
+                token.role = user.role;            
+              }
+              return token;
+              }, 
+      async signIn(data) {
+        const { user, credentials } = data;
+        console.log(data)
                 // Check if this sign in callback is being called in the credentials authentication flow.
                 // If so,  create a session entry in the database
                 if (credentials && credentials.email && credentials.password) {
@@ -138,7 +161,7 @@ const response = SvelteKitAuth( (event : RequestEvent) => {
             }
         },
         session: {
-            strategy: 'database',
+            strategy: sessionStrategy,
             maxAge: 60 * 60 * 24 * 30, // 30 days
             updateAge: 60 * 60 * 24, // 24 hours
             generateSessionToken: () => {
