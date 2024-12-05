@@ -1,11 +1,10 @@
 <script>
 	import { preventDefault } from 'svelte/legacy';
-import { enhance } from "$app/forms"
- 
+	import { enhance } from '$app/forms';
+
 	import { goto } from '$app/navigation';
 	import { signIn } from '$lib/client';
 	import { SignIn } from '@auth/sveltekit/components';
-
 
 	let email = $state('mudiaga@localhost');
 	let password = $state('Mudiaga@2024');
@@ -20,14 +19,14 @@ import { enhance } from "$app/forms"
 				redirect: false,
 				callbackUrl: '/auth'
 			});
-			console.log(result)
-			console.log(await result.json())
+			console.log(result);
+			console.log(await result.json());
 
 			if (result?.error) {
 				error = 'Invalid email or password';
 			} else {
-			  console.log("success?")
-		//		goto('/protect');
+				console.log('success?');
+				//		goto('/protect');
 			}
 		} catch (e) {
 			error = 'An error occurred. Please try again.';
@@ -36,18 +35,18 @@ import { enhance } from "$app/forms"
 </script>
 
 <div
-	class="flex min-h-screen flex-col justify-center bg-gray-50 py-12 dark:bg-gray-900 sm:px-6 lg:px-8"
+	class="flex min-h-screen flex-col justify-center bg-gray-50 py-12 sm:px-6 lg:px-8 dark:bg-gray-900"
 >
 	<div class="sm:mx-auto sm:w-full sm:max-w-md">
 		SvelteForge Logo
-		
+
 		<h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
 			Sign in to your account
 		</h2>
 	</div>
 
 	<div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-		<div class="bg-white px-4 py-8 shadow dark:bg-gray-800 sm:rounded-lg sm:px-10">
+		<div class="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10 dark:bg-gray-800">
 			{#if error}
 				<div class="mb-4 rounded-md bg-red-50 p-4 text-red-700 dark:bg-red-900 dark:text-red-100">
 					{error}
@@ -55,8 +54,8 @@ import { enhance } from "$app/forms"
 			{/if}
 
 			<form class="space-y-6" onsubmit={preventDefault(handleSubmit)}>
-			 <input type="hidden" name="providerId" value="credentials" />
-			
+				<input type="hidden" name="providerId" value="credentials" />
+
 				<div>
 					<label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 						Email
@@ -66,7 +65,7 @@ import { enhance } from "$app/forms"
 						id="email"
 						bind:value={email}
 						required
-						class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+						class="focus:border-primary-500 focus:ring-primary-500 mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 					/>
 				</div>
 
@@ -79,7 +78,7 @@ import { enhance } from "$app/forms"
 						id="password"
 						bind:value={password}
 						required
-						class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+						class="focus:border-primary-500 focus:ring-primary-500 mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 					/>
 				</div>
 
@@ -89,7 +88,7 @@ import { enhance } from "$app/forms"
 							id="remember_me"
 							type="checkbox"
 							bind:checked={rememberMe}
-							class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-gray-600"
+							class="text-primary-600 focus:ring-primary-500 h-4 w-4 rounded border-gray-300 dark:border-gray-600"
 						/>
 						<label for="remember_me" class="ml-2 block text-sm text-gray-900 dark:text-gray-300">
 							Remember me
@@ -99,7 +98,7 @@ import { enhance } from "$app/forms"
 					<div class="text-sm">
 						<a
 							href="/auth/forgot-password"
-							class="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400"
+							class="text-primary-600 hover:text-primary-500 dark:text-primary-400 font-medium"
 						>
 							Forgot your password?
 						</a>
@@ -122,7 +121,7 @@ import { enhance } from "$app/forms"
 				<div class="mt-6">
 					<button
 						type="button"
-						onclick={() => signIn('google', {callbackUrl: '/auth/onboarding'})}
+						onclick={() => signIn('google', { callbackUrl: '/auth/onboarding' })}
 						class="flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
 					>
 						<svg class="mr-2 h-5 w-5" viewBox="0 0 24 24">
@@ -140,7 +139,7 @@ import { enhance } from "$app/forms"
 				Don't have an account?
 				<a
 					href="/auth/signup"
-					class="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400"
+					class="text-primary-600 hover:text-primary-500 dark:text-primary-400 font-medium"
 				>
 					Sign up
 				</a>

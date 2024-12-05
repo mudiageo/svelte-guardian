@@ -1,6 +1,6 @@
-import { createDatabaseAdapter, type  DatabaseConfig } from './database';
+import { createDatabaseAdapter, type DatabaseConfig } from './database';
 
 export const getAdapter = async (config: DatabaseConfig) => {
-    const adapter = await createDatabaseAdapter(config);
-    return adapter
-} 
+	const adapter = await createDatabaseAdapter(config);
+	return adapter;
+};

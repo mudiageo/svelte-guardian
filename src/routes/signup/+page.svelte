@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { preventDefault } from 'svelte/legacy';
-import type { PageData, ActionData } from './$types';
+	import type { PageData, ActionData } from './$types';
 	import { goto } from '$app/navigation';
 	import { signIn } from '@auth/sveltekit/client';
 
-	let { data, form }: { data: PageData, form: ActionData } = $props();
+	let { data, form }: { data: PageData; form: ActionData } = $props();
 
 	let formData = $state({
 		name: 'Mudiaga ',
@@ -29,7 +29,6 @@ import type { PageData, ActionData } from './$types';
 			});
 
 			if (response.ok) {
-				
 				goto('/auth/onboarding');
 			} else {
 				error = 'Signup failed. Please try again.';
@@ -38,11 +37,6 @@ import type { PageData, ActionData } from './$types';
 			error = 'An error occurred. Please try again.';
 		}
 	}
-
-	
-
-	
-	
 </script>
 
 {#if form?.success}
@@ -51,19 +45,17 @@ import type { PageData, ActionData } from './$types';
 	<p>Successfully logged in! Welcome back, {data?.user}</p>
 {/if}
 
-
 <div
-	class="flex min-h-screen flex-col justify-center bg-gray-50 py-12 dark:bg-gray-900 sm:px-6 lg:px-8"
+	class="flex min-h-screen flex-col justify-center bg-gray-50 py-12 sm:px-6 lg:px-8 dark:bg-gray-900"
 >
 	<div class="sm:mx-auto sm:w-full sm:max-w-md">
-		
 		<h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
 			Create your account
 		</h2>
 	</div>
 
 	<div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-		<div class="bg-white px-4 py-8 shadow dark:bg-gray-800 sm:rounded-lg sm:px-10">
+		<div class="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10 dark:bg-gray-800">
 			{#if error}
 				<div class="mb-4 rounded-md bg-red-50 p-4 text-red-700 dark:bg-red-900 dark:text-red-100">
 					{error}
@@ -81,7 +73,7 @@ import type { PageData, ActionData } from './$types';
 						name="name"
 						bind:value={formData.name}
 						required
-						class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+						class="focus:border-primary-500 focus:ring-primary-500 mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 					/>
 				</div>
 
@@ -95,7 +87,7 @@ import type { PageData, ActionData } from './$types';
 						name="email"
 						bind:value={formData.email}
 						required
-						class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+						class="focus:border-primary-500 focus:ring-primary-500 mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 					/>
 				</div>
 
@@ -110,7 +102,7 @@ import type { PageData, ActionData } from './$types';
 						bind:value={formData.password}
 						required
 						minlength="8"
-						class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+						class="focus:border-primary-500 focus:ring-primary-500 mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 					/>
 				</div>
 
@@ -128,7 +120,7 @@ import type { PageData, ActionData } from './$types';
 						bind:value={formData.confirmPassword}
 						required
 						minlength="8"
-						class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+						class="focus:border-primary-500 focus:ring-primary-500 mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 					/>
 				</div>
 
@@ -148,7 +140,7 @@ import type { PageData, ActionData } from './$types';
 				<div class="mt-6">
 					<button
 						type="button"
-						onclick={() => signIn('google', {callbackUrl: '/auth/onboarding'})}
+						onclick={() => signIn('google', { callbackUrl: '/auth/onboarding' })}
 						class="flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
 					>
 						<svg class="mr-2 h-5 w-5" viewBox="0 0 24 24">
@@ -164,7 +156,7 @@ import type { PageData, ActionData } from './$types';
 
 			<p class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
 				Already have an account?
-				<a href="/auth/login" class="font-medium text-primary-600 hover:text-primary-500">
+				<a href="/auth/login" class="text-primary-600 hover:text-primary-500 font-medium">
 					Sign in
 				</a>
 			</p>

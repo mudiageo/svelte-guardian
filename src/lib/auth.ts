@@ -1,13 +1,21 @@
-import { PrismaClient } from '@prisma/client'
-
-export const prisma = new PrismaClient()
-
 import { guardianAuth, type GuardianAuthConfig } from '$lib';
+import { PrismaClient } from '@prisma/client';
+import { PrismaAdapter } from '@auth/prisma-adapter';
+const prisma = new PrismaClient();
+const adapter = PrismaAdapter(prisma);
+
+export const getUserByEmail = async (email) => {
+	return prisma.user.findUnique({ where: { email } });
+};
 
 export const { handle, signIn, signOut, middleware, createUser } = await guardianAuth({
-	database: {type: 'prisma', client: prisma},
+	database: {
+		type: 'custom',
+		adapter,
+		getUserByEmail
+	},
 	providers: {
-	google: {
+		google: {
 			enabled: true,
 			strict: true
 		},
@@ -21,11 +29,8 @@ export const { handle, signIn, signOut, middleware, createUser } = await guardia
 		lockoutDuration: 15 * 60 * 1000, // 15 minutes
 		requireEmailVerification: true,
 		routeProtection: {
-			protectedRoutes: ['/protect','/admin'],
+			protectedRoutes: ['/protect', '/admin'],
 			unauthorizedRedirect: '/'
 		}
-	},
-	advanced: {
-		sessionStrategy: 'jwt'
 	}
 } satisfies GuardianAuthConfig);
