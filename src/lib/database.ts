@@ -86,29 +86,29 @@ export const createDatabaseAdapter = async (config: DatabaseConfig): Promise<Ada
 		case 'custom':
 			return config.adapter;
 		case 'drizzle':
-			const { DrizzleAdapter } = await import('@auth/drizzle-adapter');
+			const { DrizzleAdapter } = await optionalImport('@auth/drizzle-adapter');
 			return DrizzleAdapter(config.client, (config as DrizzleConfig).schema);
 
 		case 'mongodb':
-			const { MongoDBAdapter } = await import('@auth/mongodb-adapter');
+			const { MongoDBAdapter } = await optionalImport('@auth/mongodb-adapter');
 			return MongoDBAdapter(config.client, {
 				databaseName: (config as MongoDBConfig).database
 			});
 
 		case 'postgres':
-			const { PostgresAdapter } = await import('@auth/pg-adapter');
+			const { PostgresAdapter } = await optionalImport('@auth/pg-adapter');
 			return PostgresAdapter(config.client);
 
 		case 'mysql':
-			const { MySQLAdapter } = await import('@auth/mysql-adapter');
+			const { MySQLAdapter } = await optionalImport('@auth/mysql-adapter');
 			return MySQLAdapter(config.client);
 
 		case 'sqlite':
-			const { SQLiteAdapter } = await import('@auth/sqlite-adapter');
+			const { SQLiteAdapter } = await optionalImport('@auth/sqlite-adapter');
 			return SQLiteAdapter(config.client);
 
 		case 'supabase':
-			const { SupabaseAdapter } = await import('@auth/supabase-adapter');
+			const { SupabaseAdapter } = await optionalImport('@auth/supabase-adapter');
 			return SupabaseAdapter(
 				(config as SupabaseConfig).client,
 				(config as SupabaseConfig).serviceRole
