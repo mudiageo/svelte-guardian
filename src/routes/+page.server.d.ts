@@ -1,3 +1,3 @@
 export declare const actions: {
-	default: import('@sveltejs/kit').Action;
+    default: import("@sveltejs/kit").Action;
 };

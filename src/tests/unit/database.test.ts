@@ -11,7 +11,7 @@ describe('Prisma Database tests', () => {
 		}
 	};
 	it('should create Prisma database adapter', () => {
-		const adapter = createDatabaseAdapter(customConfig);
+		const adapter = createDatabaseAdapter(customConfig.database);
 		expect(adapter).toBeDefined();
 	});
 

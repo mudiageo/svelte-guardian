@@ -1,4 +1,5 @@
 import type { Adapter } from '@auth/core/adapters';
+import { optionalImport } from './utils'
 
 // Comprehensive database provider types
 export type DatabaseProviderType =
@@ -73,13 +74,14 @@ export type DatabaseConfig =
 	| SupabaseConfig
 	| CustomAdapterConfig;
 
+
 // Adapter creation utility
 export const createDatabaseAdapter = async (config: DatabaseConfig): Promise<Adapter | null> => {
 	if (!config) return null;
 
 	switch (config.type) {
 		case 'prisma':
-			const { PrismaAdapter } = await import('@auth/prisma-adapter');
+			const { PrismaAdapter } = await optionalImport('@auth/prisma-adapter');
 			return PrismaAdapter(config.client);
 		case 'custom':
 			return config.adapter;
