@@ -6,7 +6,7 @@ import { createProviders, type AuthProvider } from './providers';
 import { getAdapter } from '../adapter';
 import { createMiddleware } from './middleware';
 import { createEventHandlers } from './events';
-import { GuardianAuthConfig, DefaultGuardianAuthConfig } from '../types/config';
+import { type GuardianAuthConfig, DefaultGuardianAuthConfig } from '../types/config';
 import { createLogger } from './logger';
 import { AUTH_SECRET } from '$env/static/private';
 import { hashPassword } from '../utils/security.js';
