@@ -26,65 +26,103 @@ export function validateEmail(email: string): boolean {
 	}
 }
 
+export const DEFAULT_SPECIAL_CHARS = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
 // Validate password
-export function validatePassword(passwordPolicy: SecurityConfig["passwordPolicy"], password: string): {success: boolean, message?: any} {
+export function validatePassword(password: string, passwordPolicy?: SecurityConfig["passwordPolicy"]): {success: boolean, message?: any} {
 	try {
 
-const defaultOptions = {
-	minLength: 12,
-	maxLength: 64,
-	requireUppercase: true,
-	requireLowercase: true,
-	requireNumbers: true,
-	requireSpecialChars: true,
-}
-const mergedOptions = {
-	...defaultOptions,
-	...passwordPolicy
-}
-	const passwordSchema = z
-		.string()
-		.min(mergedOptions.minLength, 'Password must be at least 12 characters')
-
-		if (mergedOptions.maxLength) {
-			passwordSchema.max(mergedOptions.maxLength, `Password cannot exceed ${mergedOptions.maxLength} characters`);
-		}
-	
-		if (mergedOptions.requireUppercase) {
-			const minUppercase = mergedOptions.requireUppercase ?? 1;
-			passwordSchema.regex(new RegExp(`(?=.*?[A-Z]){${minUppercase}}`), `Password must contain at least ${minUppercase} uppercase letters`);
-		}
-	
-		if (mergedOptions.requireLowercase) {
-			const minLowercase = mergedOptions.requireLowercase ?? 1;
-			passwordSchema.regex(new RegExp(`(?=.*?[a-z]){${minLowercase}}`), `Password must contain at least ${minLowercase} lowercase letters`);
-		}
-	
-		if (mergedOptions.requireNumbers) {
-			const minNumber = mergedOptions.requireNumbers ?? 1;
-			passwordSchema.regex(new RegExp(`(?=.*?[0-9]){${minNumber}}`), `Password must contain at least ${minNumber} numbers`);
-		}
-	
-		if (mergedOptions.requireSpecialChars) {
-			const minSpecialChar = mergedOptions.requireSpecialChars ?? 1;
-			passwordSchema.regex(new RegExp(`(?=.*?[!@#$%^&*(),.?":{}|<>]){${minSpecialChar}}`), `Password must contain at least ${minSpecialChar} special characters`);
-		}
+		if(passwordPolicy === undefined) passwordPolicy = {}
+		console.log(passwordPolicy)
+		const {
+			minLength = 8,
+			maxLength = 64,
+			requireUppercase = true,
+			requireLowercase = true,
+			requireNumbers = true,
+			requireSpecialChars = true,
+			specialChars = DEFAULT_SPECIAL_CHARS
+		} = passwordPolicy;
 		
+
+		let passwordSchema = z.string()
+			.min(minLength, { message: `Password must be at least ${minLength} characters long` })
+			.max(maxLength, { message: `Password must be no more than ${maxLength} characters long` });
+		
+		  // Uppercase check
+		  if (requireUppercase !== false) {
+			const minUppercase = typeof requireUppercase === 'number' ? requireUppercase : 1;
+			passwordSchema = passwordSchema.refine(
+			  (val) => {
+				const uppercaseCount = (val.match(/[A-Z]/g) || []).length;
+				return uppercaseCount >= minUppercase;
+			  }, 
+			  { message: minUppercase === 1 
+				? 'Password must contain at least one uppercase letter' 
+				: `Password must contain at least ${minUppercase} uppercase letters` }
+			);
+		  }
+		
+		  // Lowercase check
+		  if (requireLowercase !== false) {
+			const minLowercase = typeof requireLowercase === 'number' ? requireLowercase : 1;
+			passwordSchema = passwordSchema.refine(
+			  (val) => {
+				const lowercaseCount = (val.match(/[a-z]/g) || []).length;
+				return lowercaseCount >= minLowercase;
+			  }, 
+			  { message: minLowercase === 1 
+				? 'Password must contain at least one lowercase letter' 
+				: `Password must contain at least ${minLowercase} lowercase letters` }
+			);
+		  }
+		
+		  // Numbers check
+		  if (requireNumbers !== false) {
+			const minNumbers = typeof requireNumbers === 'number' ? requireNumbers : 1;
+			passwordSchema = passwordSchema.refine(
+			  (val) => {
+				const numberCount = (val.match(/[0-9]/g) || []).length;
+				return numberCount >= minNumbers;
+			  }, 
+			  { message: minNumbers === 1 
+				? 'Password must contain at least one number' 
+				: `Password must contain at least ${minNumbers} numbers` }
+			);
+		  }
+		
+		  // Special characters check
+		  if (requireSpecialChars !== false) {
+			const minSpecialChars = typeof requireSpecialChars === 'number' ? requireSpecialChars : 1;
+			const escapedSpecialChars = specialChars.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+			
+			passwordSchema = passwordSchema.refine(
+			  (val) => {
+				const specialCharCount = (val.match(new RegExp(`[${escapedSpecialChars}]`, 'g')) || []).length;
+				return specialCharCount >= minSpecialChars;
+			  }, 
+			  { message: minSpecialChars === 1 
+				? `Password must contain at least one special character from: ${specialChars}` 
+				: `Password must contain at least ${minSpecialChars} special characters from: ${specialChars}` }
+			);
+		  }
+		
+
+		  
 		passwordSchema.parse(password);
-		return {success: true};
+		return {success: true, message: ['Password is okay']};
 	} catch (error){
 		if (error instanceof z.ZodError) {
-			 const formattedErrors = error.format()._error;
-			console.log(formattedErrors)
 			const errorMessages = error.errors.map(e => e.message)
 			
 			return {
-			  success:true,
+			  success:false,
 			  message: errorMessages, // Plain text error message
 			  // You can add more properties for styling or other frontend-specific needs
 			};
 			
-}
+		}
+		throw Error(error)
 	}
 }
 

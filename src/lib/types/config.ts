@@ -28,10 +28,12 @@ export interface SecurityConfig {
 	};
 	passwordPolicy?: {
 		minLength?: number;
-		requireUppercase?: boolean;
-		requireLowercase?: boolean;
-		requireNumbers?: boolean;
-		requireSpecialChars?: boolean;
+		maxLength?: number;
+		requireUppercase?: boolean | number;
+		requireLowercase?: boolean | number;
+		requireNumbers?: boolean | number;
+		requireSpecialChars?: boolean | number;
+		specialChars?: string;
 	};
 }
 
@@ -42,7 +44,7 @@ export interface EventHandlers {
 }
 
 export interface GuardianAuthConfig {
-	database: DatabaseConfig;
+	database?: DatabaseConfig;
 	providers: {
 		google?: ProviderConfig;
 		github?: ProviderConfig;
