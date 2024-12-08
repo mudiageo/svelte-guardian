@@ -12,17 +12,17 @@ export const actions = {
 		const password = data.get('password');
 
 		try {
-			const user = await createUser({
+			const result = await createUser({
 				email,
 				name,
 				role: 'user',
 				password
 			});
 
-			return { success: true, user: { id: user.id, email: user.email, name: user.name } };
+			return result
 		} catch (error) {
 			console.error('Signup failed:', error);
-			return { success: false };
+			return { success: false, error };
 		}
 		// TODO log the user in
 	}

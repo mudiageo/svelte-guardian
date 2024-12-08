@@ -2,11 +2,11 @@ import GoogleProvider from '@auth/core/providers/google';
 import GitHubProvider from '@auth/core/providers/github';
 import CredentialsProvider from '@auth/core/providers/credentials';
 import type { Provider } from '@auth/core/providers';
-import type { GuardianAuthConfig } from '../types/config';
-import { validateCredentials } from '../utils/validation';
-import { verifyPassword } from '../utils/security';
-import { getUserByEmail } from '../database';
-import type { DatabaseConfig } from '$lib/database';
+import type { GuardianAuthConfig } from '../types/config.js';
+import { validateCredentials } from '../utils/validation.js';
+import { verifyPassword } from '../utils/security.js';
+import { getUserByEmail } from '../database.js';
+import type { DatabaseConfig } from '$lib/database.js';
 
 export type AuthProvider = Provider;
 

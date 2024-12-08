@@ -138,7 +138,7 @@
 			<p class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
 				Don't have an account?
 				<a
-					href="/auth/signup"
+					href="/signup"
 					class="text-primary-600 hover:text-primary-500 dark:text-primary-400 font-medium"
 				>
 					Sign up

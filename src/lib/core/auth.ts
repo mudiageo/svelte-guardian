@@ -2,14 +2,15 @@ import type { Handle } from '@sveltejs/kit';
 import type { AuthConfig } from '@auth/core/types';
 import { SvelteKitAuth } from '@auth/sveltekit';
 import { encode, decode } from '@auth/core/jwt';
-import { createProviders, type AuthProvider } from './providers';
-import { getAdapter } from '../adapter';
-import { createMiddleware } from './middleware';
-import { createEventHandlers } from './events';
-import { type GuardianAuthConfig, DefaultGuardianAuthConfig } from '../types/config';
-import { createLogger } from './logger';
+import { createProviders, type AuthProvider } from './providers.js';
+import { getAdapter } from '../adapter.js';
+import { createMiddleware } from './middleware.js';
+import { createEventHandlers } from './events.js';
+import { type GuardianAuthConfig, DefaultGuardianAuthConfig } from '../types/config.js';
+import { createLogger } from './logger.js';
 import { AUTH_SECRET } from '$env/static/private';
 import { hashPassword } from '../utils/security.js';
+import { validatePassword } from '../utils/validation.js';
 import type { RequestEvent } from '../../routes/$types.js';
 
 export class GuardianAuth {
@@ -162,6 +163,11 @@ export class GuardianAuth {
 
 		const createUser = async (data) => {
 			try {
+				const passwordPolicy = this.config.security?.passwordPolicy
+				const validPassword = validatePassword(passwordPolicy, data.password)
+
+				if(!validPassword?.success) return {success:false, error: validPassword.message}
+
 				const hashedPassword = await hashPassword(data.password);
 				const user = await adapter.createUser({ ...data, password: hashedPassword });
 
@@ -171,9 +177,11 @@ export class GuardianAuth {
 					provider: 'credentials',
 					providerAccountId: user.id
 				});
-				return user;
+				return {success: true, user};
 			} catch (error) {
 				this.logger.error('Unable to create user', error);
+				return {success:false, error}
+
 			}
 		};
 
