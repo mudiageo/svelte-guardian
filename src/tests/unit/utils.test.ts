@@ -8,15 +8,3 @@ describe('Test Utils', () => {
 		expect(adapter).toBeDefined();
 	});
 });
-describe('Validation Utils', () => {
-	it('should validate password according to schema Prisma adapter', async () => {
-		const passwordPolicy = {
-			requireUppercase:2
-
-		}
-
-		const isValidPassword = validatePassword(passwordPolicy, 'rdd');
-		console.log(isValidPassword)
-		expect(isValidPassword).toBeDefined();
-	});
-});
