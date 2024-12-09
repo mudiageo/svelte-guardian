@@ -18,13 +18,13 @@ export interface SecurityConfig {
 	};
 	// Route protection configuration
 	routeProtection?: {
-		// Define protected routes by role
+		// Define which routes are accessible by user based on role
 		protectedRoutes?: {
-			[route: string]: string[]; // route: allowed roles
+			[route: string]: { allowedRoles: string[], redirectPath?: string}; 
 		};
 
-		// Fallback redirect for unauthorized access
-		unauthorizedRedirect?: string;
+		//General fallback redirect for unauthorized access
+		redirectPath?: string;
 	};
 	passwordPolicy?: {
 		minLength?: number;
@@ -33,6 +33,7 @@ export interface SecurityConfig {
 		requireLowercase?: boolean | number;
 		requireNumbers?: boolean | number;
 		requireSpecialChars?: boolean | number;
+		//Define custom special characters set
 		specialChars?: string;
 	};
 }

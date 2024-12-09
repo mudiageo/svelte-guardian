@@ -231,6 +231,7 @@ Plans are in place to migrate from this prisma-centric approach. In the meantime
 Immediate Priorities (v0.2.0)
 Role-based Route Protection
 Custom Event Handlers
+Multi-Session Management
 Logging System
 Multi-Database Provider Support
 Comprehensive Documentation
@@ -258,8 +259,6 @@ Internationalization (i18n) Support
 ## 🛠 TODO
 
 - [ ] Implement two factor auth, rate limiting, refresh token rotation
-- [ ] Implement password policies configuration
-- [ ] Migrate from prisma-centric approach
 - [ ] Create comprehensive documentation site
 - [ ] Add more authentication providers and database providers
 - [ ] Implement more granular role-based access control
