@@ -14,7 +14,7 @@ Batteries included authentication for SvelteKit applications.
 ## 📦 Installation
 
 ```bash
-pnpm install svelte-guardian # or use your favorite package manager
+pnpm add svelte-guardian # or use your favorite package manager
 ```
 
 ## 🔧 Basic Usage
