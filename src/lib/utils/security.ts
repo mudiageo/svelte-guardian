@@ -1,8 +1,8 @@
-import * as argon2 from 'argon2';
+import { hash, verify } from 'argon2';
 
 export const hashPassword = async (password: string): Promise<string> => {
-	const hash = await argon2.hash(password);
-	return hash;
+	const hashedPassword = await hash(password);
+	return hashedPassword;
 };
 
 // Secure password verification
@@ -10,7 +10,7 @@ export const verifyPassword = async (
 	storedPassword: string,
 	providedPassword: string
 ): Promise<boolean> => {
-	const isValid = await argon2.verify(storedPassword, providedPassword);
+	const isValid = await verify(storedPassword, providedPassword);
 	return isValid;
 };
 
