@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { optionalImport } from '../../lib/utils';
-import { validatePassword } from '../../lib/utils/validation.js';
 
 describe('Test Utils', () => {
 	it('should import Prisma adapter', async () => {

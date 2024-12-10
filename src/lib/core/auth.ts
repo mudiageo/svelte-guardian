@@ -16,6 +16,7 @@ import type { RequestEvent } from '../../routes/$types.js';
 export class GuardianAuth {
 	private config: GuardianAuthConfig;
 	private logger;
+	private adapter;
 
 	constructor(userConfig: Partial<GuardianAuthConfig> = {}) {
 		// Merge user config with default config
@@ -30,21 +31,20 @@ export class GuardianAuth {
 
 	// Create authentication providers
 	private createProviders(): AuthProvider[] {
-		return createProviders(this.config.providers, this.config.database);
+		return createProviders(this.config.providers, this.adapter);
 	}
 
 	// Create authentication middleware
 	private createMiddleware(): Handle {
 		return createMiddleware(this.config.security);
 	}
-	private getAdapter() {
-		return getAdapter(this.config.database);
-	}
 
 	// Initialize authentication
 	public async init() {
+	  	//Get adapter
+		this.adapter = await getAdapter(this.config.database);
 		const providers = this.createProviders();
-		const adapter = await this.getAdapter();
+		const adapter = this.adapter;
 		const middleware = this.createMiddleware();
 		const secret = AUTH_SECRET || crypto.randomUUID();
 		// Log initialization

@@ -23,7 +23,6 @@ export interface BaseDatabaseConfig {
 export interface CustomAdapterConfig extends BaseDatabaseConfig {
 	type: 'custom';
 	adapter: Adapter;
-	getUserByEmail: (email: string) => Promise<any>;
 }
 export interface PrismaConfig extends BaseDatabaseConfig {
 	type: 'prisma';

@@ -85,6 +85,7 @@
 		"@auth/core": "^0.37.4",
 		"@auth/prisma-adapter": "^2.7.4",
 		"@auth/sveltekit": "^1.7.4",
+		"@node-rs/argon2": "^2.0.2",
 		"@prisma/client": "^5.22.0",
 		"argon2": "^0.41.1",
 		"argon2-wasm-esm": "^1.0.3",

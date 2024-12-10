@@ -2,17 +2,17 @@ import GoogleProvider from '@auth/core/providers/google';
 import GitHubProvider from '@auth/core/providers/github';
 import CredentialsProvider from '@auth/core/providers/credentials';
 import type { Provider } from '@auth/core/providers';
+import type { Adapter } from "@auth/core/adapters"
+ 
 import type { GuardianAuthConfig } from '../types/config.js';
 import { validateCredentials } from '../utils/validation.js';
 import { verifyPassword } from '../utils/security.js';
-import { getUserByEmail } from '../database.js';
-import type { DatabaseConfig } from '$lib/database.js';
 
 export type AuthProvider = Provider;
 
 export function createProviders(
 	providerConfig: GuardianAuthConfig['providers'],
-	databaseConfig: DatabaseConfig
+	adapter: Adapter
 ): AuthProvider[] {
 	const providers: AuthProvider[] = [];
 
@@ -65,11 +65,12 @@ export function createProviders(
 					}
 
 					// Find user and verify password
-					const user = await getUserByEmail(databaseConfig, email);
+					const user = await adapter.getUserByEmail(email);
 
 					if (!user) {
 						throw new Error('User not found');
 					}
+					console.log('user',user)
 					const isValidPassword = await verifyPassword(user.password, password);
 
 					if (!isValidPassword) return null;
