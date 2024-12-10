@@ -1,4 +1,4 @@
-import { hash, verify } from 'argon2';
+import { hash, verify } from 'argon2-wasm-esm';
 
 export const hashPassword = async (password: string): Promise<string> => {
 	const hashedPassword = await hash(password);

@@ -87,6 +87,7 @@
 		"@auth/sveltekit": "^1.7.4",
 		"@prisma/client": "^5.22.0",
 		"argon2": "^0.41.1",
+		"argon2-wasm-esm": "^1.0.3",
 		"bcrypt": "^5.1.1",
 		"zod": "^3.23.8"
 	},
