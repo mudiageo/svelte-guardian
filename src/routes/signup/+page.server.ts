@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 
 export const actions = {
 	default: async ({ request }) => {
-		console.log('hey');
 		const data = await request.formData();
 		const name = data.get('name');
 		const email = data.get('email');
@@ -22,6 +21,7 @@ export const actions = {
 			return result
 		} catch (error) {
 			console.error('Signup failed:', error);
+			throw Error(error)
 			return { success: false, error };
 		}
 		// TODO log the user in

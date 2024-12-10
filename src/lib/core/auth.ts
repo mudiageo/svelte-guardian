@@ -163,12 +163,14 @@ export class GuardianAuth {
 
 		const createUser = async (data) => {
 			try {
+			  console.log(1)
 				const passwordPolicy = this.config.security?.passwordPolicy
-				const validPassword = validatePassword(passwordPolicy, data.password)
-
+				const validPassword = validatePassword(data.password, passwordPolicy)
+console.log(validPassword)
 				if(!validPassword?.success) return {success:false, error: validPassword.message}
 
 				const hashedPassword = await hashPassword(data.password);
+				
 				const user = await adapter.createUser({ ...data, password: hashedPassword });
 
 				const account = await adapter.linkAccount({
@@ -180,7 +182,12 @@ export class GuardianAuth {
 				return {success: true, user};
 			} catch (error) {
 				this.logger.error('Unable to create user', error);
-				return {success:false, error}
+			throw new Error(error)
+			
+			return {
+			  success:false,
+			  error: 'errorMessages', 
+			};
 
 			}
 		};

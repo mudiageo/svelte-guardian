@@ -17,7 +17,22 @@ class GuardianLogger {
 
 		if (messageLevelIndex >= currentLevelIndex) {
 			const timestamp = new Date().toISOString();
-			console.log(`[SVELTE-GUARDIAN][${level.toUpperCase()}][${timestamp}] ${message}`, data || '');
+			const logPrefix = `[SVELTE-GUARDIAN][${level.toUpperCase()}][${timestamp}] `
+			switch(level){
+			  case 'debug':
+			  console.debug(logPrefix, message, data || '');
+			  break;
+			  case 'info':
+			  console.info(logPrefix, message, data || '');
+			  break;
+			  case 'warn':
+			  console.warn(logPrefix, message, data || '');
+			  break;
+			  case 'error':
+			  console.error(logPrefix, message, data || '');
+			  break;
+			  default: console.log(logPrefix, message, data || '');
+			}
 		}
 	}
 

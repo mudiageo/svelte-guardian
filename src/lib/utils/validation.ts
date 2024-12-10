@@ -33,7 +33,6 @@ export function validatePassword(password: string, passwordPolicy?: SecurityConf
 	try {
 
 		if(passwordPolicy === undefined) passwordPolicy = {}
-		console.log(passwordPolicy)
 		const {
 			minLength = 8,
 			maxLength = 64,
