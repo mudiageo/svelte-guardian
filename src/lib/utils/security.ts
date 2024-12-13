@@ -1,4 +1,4 @@
-import { hash, verify } from '@node-rs/argon2';
+import { hash, verify } from 'argon2-esm';
 
 export const hashPassword = async (password: string): Promise<string> => {
 	const hashedPassword = await hash(password);
