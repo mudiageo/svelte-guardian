@@ -13,10 +13,10 @@ export default defineConfig({
 				'@auth/mysql-adapter',
 				'@auth/sqlite-adapter',
 				'@auth/supabase-adapter'
-			]
-		}
+			],
+		},
 	},
-
+	
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']
 	}

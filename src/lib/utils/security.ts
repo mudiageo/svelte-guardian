@@ -1,7 +1,11 @@
-import { hash, verify } from 'argon2-esm';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const argon2 = process.env.NODE_ENV === 'development'
+  ? await import('argon2')
+  : require('argon2');
 
 export const hashPassword = async (password: string): Promise<string> => {
-	const hashedPassword = await hash(password);
+	const hashedPassword = await argon2.hash(password);
 	return hashedPassword;
 };
 
@@ -10,7 +14,7 @@ export const verifyPassword = async (
 	storedPassword: string,
 	providedPassword: string
 ): Promise<boolean> => {
-	const isValid = await verify(storedPassword, providedPassword);
+	const isValid = await argon2.verify(storedPassword, providedPassword);
 	return isValid;
 };
 

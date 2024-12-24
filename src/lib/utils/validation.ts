@@ -43,7 +43,6 @@ export function validatePassword(password: string, passwordPolicy?: SecurityConf
 			specialChars = DEFAULT_SPECIAL_CHARS
 		} = passwordPolicy;
 		
-
 		let passwordSchema = z.string()
 			.min(minLength, { message: `Password must be at least ${minLength} characters long` })
 			.max(maxLength, { message: `Password must be no more than ${maxLength} characters long` });

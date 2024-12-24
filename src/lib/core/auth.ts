@@ -163,10 +163,8 @@ export class GuardianAuth {
 
 		const createUser = async (data) => {
 			try {
-			  console.log(1)
 				const passwordPolicy = this.config.security?.passwordPolicy
 				const validPassword = validatePassword(data.password, passwordPolicy)
-console.log(validPassword)
 				if(!validPassword?.success) return {success:false, error: validPassword.message}
 
 				const hashedPassword = await hashPassword(data.password);
