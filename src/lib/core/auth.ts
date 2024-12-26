@@ -155,6 +155,7 @@ export class GuardianAuth {
 					}
 				},
 				debug: true,
+				trustHost: true,
 				secret
 			};
 
