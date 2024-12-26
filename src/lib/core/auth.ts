@@ -74,7 +74,6 @@ export class GuardianAuth {
 				callbacks: {
 					async session(data) {
 						const { session, user } = data;
-						console.log('sesson data', data);
 						session.user.id = user.id;
 						session.user.name = user.name;
 						session.user.role = user.role;
@@ -91,7 +90,6 @@ export class GuardianAuth {
 					},
 					async signIn(data) {
 						const { user, credentials } = data;
-						console.log(data);
 						// Check if this sign in callback is being called in the credentials authentication flow.
 						// If so,  create a session entry in the database
 						if (credentials && credentials.email && credentials.password) {

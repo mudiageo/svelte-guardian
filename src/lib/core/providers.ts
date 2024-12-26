@@ -60,7 +60,6 @@ export function createProviders(
 					// Validate credentials
 					const isValidCredentials = validateCredentials(email, password);
 					if (!isValidCredentials) {
-						console.log(isValidCredentials);
 						throw new Error('Invalid credentials');
 					}
 
@@ -70,7 +69,6 @@ export function createProviders(
 					if (!user) {
 						throw new Error('User not found');
 					}
-					console.log('user',user)
 					const isValidPassword = await verifyPassword(user.password, password);
 
 					if (!isValidPassword) return null;
