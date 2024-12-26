@@ -155,7 +155,7 @@ export class GuardianAuth {
 					}
 				},
 				debug: true,
-				trustHost: true,
+				trustHost: true,//TODO link to environment variable and explore other options
 				secret
 			};
 
