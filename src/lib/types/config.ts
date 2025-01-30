@@ -18,13 +18,30 @@ export interface SecurityConfig {
 	};
 	// Route protection configuration
 	routeProtection?: {
-		// Define which routes are accessible by user based on role
+		// Define which routes are accessible by user based on role or if authenticated 
 		protectedRoutes?: {
-			[route: string]: { allowedRoles: string[], redirectPath?: string}; 
-		};
+        [route: string]: {
+            allowedRoles?: string[];
+            authenticated?: boolean;
+            redirectPath?: string;
+        };
+    };
+    //Define which routes are inaccessible by authenticated users
+    publicRoutes?: {
+        [route: string]: {
+            redirectPath?: string;
+        };
+    };
+		
 
-		//General fallback redirect for unauthorized access
+		//Global fallback redirect for unauthorized access
 		redirectPath?: string;
+		//Global redirect path for authenticated users accessing public routes
+		authenticatedRedirect?: string;
+		
+		//Custom session object path for user roles (default: 'role')
+    roleKey?: string;
+
 	};
 	passwordPolicy?: {
 		minLength?: number;

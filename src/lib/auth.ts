@@ -24,9 +24,24 @@ export const { handle, signIn, signOut, middleware, createUser } = await guardia
 		maxLoginAttempts: 5,
 		lockoutDuration: 15 * 60 * 1000, // 15 minutes
 		requireEmailVerification: true,
-		routeProtection: {
-			protectedRoutes: ['/protect','/admin'],
-			unauthorizedRedirect: '/'
-		}
+    protectedRoutes: {
+        '/admin': { 
+            allowedRoles: ['admin', 'superadmin'],
+            redirectPath: '/signin'
+        },
+        '/dashboard': {
+            authenticated: true,
+            redirectPath: '/signin'
+        }
+    },
+    publicRoutes: {
+        '/signin': {
+            redirectPath: '/dashboard'
+        },
+        '/signup': {}
+    },
+    redirectPath: '/default-unauthorized',
+    authenticatedRedirect: '/dashboard',
+    roleKey: 'role',
 	}
 } satisfies GuardianAuthConfig);

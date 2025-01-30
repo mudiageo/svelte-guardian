@@ -1,34 +1,57 @@
 import type { Handle } from '@sveltejs/kit';
 import type { SecurityConfig } from '../types/config';
-import { sequence } from '@sveltejs/kit/hooks';
+import { sequence } from "@sveltejs/kit/hooks";
+import { redirect } from '@sveltejs/kit';
 
 export function createMiddleware(securityConfig: SecurityConfig): Handle {
 	const authMiddleware: Handle = async ({ event, resolve }) => {
 		const session = await event.locals.auth();
-		// Define protected routes based on security level
-		let protectedRoutes =
-			securityConfig.level === 'strict'
-				? ['/dashboard', '/admin', '/profile']
-				: securityConfig.level === 'moderate'
-					? ['/dashboard', '/profile']
-					: [];
-		protectedRoutes = securityConfig.routeProtection?.protectedRoutes || protectedRoutes;
 
-		//Implement Role base guarding
+    const userRole = session?.user?.[securityConfig.roleKey || 'role'];
+    const currentPath = event.url.pathname;
 
-		const path = event.url.pathname;
-		const Location = securityConfig.routeProtection?.unauthorizedRedirect || '/login';
-		if (protectedRoutes.some((route) => path.startsWith(route))) {
-			if (!session) {
-				return new Response(null, {
-					status: 302,
-					headers: { Location }
-				});
-			}
-		}
+    // Check public routes first
+    if (securityConfig.publicRoutes) {
+        const publicRoute = Object.entries(securityConfig.publicRoutes).find(([route]) => 
+            route === currentPath || currentPath.startsWith(route)
+        );
 
-		return resolve(event);
-	};
+        if (publicRoute) {
+            if (session?.user && publicRoute[1].redirectPath) {
+                redirect(303, publicRoute[1].redirectPath);
+            }
+            if (session?.user && securityConfig.authenticatedRedirect) {
+                redirect(303, securityConfig.authenticatedRedirect);
+            }
+        }
+    }
+
+    // Check protected routes
+    if (securityConfig.protectedRoutes) {
+        const protectedRoute = Object.entries(securityConfig.protectedRoutes).find(([route]) => 
+            route === currentPath || currentPath.startsWith(route)
+        );
+
+        if (protectedRoute) {
+            const [route, routeConfig] = protectedRoute;
+
+            if (!session?.user) {
+                redirect(303, routeConfig.redirectPath || securityConfig.redirectPath || '/');
+            }
+
+            if (routeConfig.authenticated && !session.user) {
+                redirect(303, routeConfig.redirectPath || securityConfig.redirectPath || '/');
+            }
+
+            if (routeConfig.allowedRoles && !routeConfig.allowedRoles.includes(userRole)) {
+                redirect(303, routeConfig.redirectPath || securityConfig.redirectPath || '/');
+            }
+        }
+    }
+
+    return resolve(event);
+};
+	
 
 	const securityHeadersMiddleware: Handle = async ({ event, resolve }) => {
 		// Apply security headers based on config level
