@@ -1,6 +1,6 @@
 import type { Handle } from '@sveltejs/kit';
 import type { SecurityConfig } from '../types/config';
-import { sequence } from "@sveltejs/kit/hooks";
+import { sequence } from '@sveltejs/kit/hooks';
 import { redirect } from '@sveltejs/kit';
 
 export function createMiddleware(securityConfig: SecurityConfig): Handle {
@@ -64,7 +64,6 @@ export function createMiddleware(securityConfig: SecurityConfig): Handle {
 		if (securityConfig.level === 'strict') {
 			headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline'";
 		}
-
 		Object.entries(headers).forEach(([key, value]) => {
 			event.setHeaders({ [key]: value });
 		});
