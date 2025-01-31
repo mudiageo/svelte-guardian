@@ -70,6 +70,7 @@ export interface GuardianAuthConfig {
 			passwordless?: boolean;
 			additionalUserFields?: string[]; // Additional fields to pass to session.user
 			allowRegistration?: boolean; // Handle new user registration internally
+			requireEmailVerification?: boolean; // Verify new user emails
 		};
 	};
 	security: SecurityConfig;

@@ -12,6 +12,7 @@ import { AUTH_SECRET } from '$env/static/private';
 import { hashPassword } from '../utils/security.js';
 import { validatePassword } from '../utils/validation.js';
 import type { RequestEvent } from '../../routes/$types.js';
+import { AuthenticationError } from './errors.js'
 
 export class GuardianAuth {
 	private config: GuardianAuthConfig;
@@ -31,7 +32,7 @@ export class GuardianAuth {
 
 	// Create authentication providers
 	private createProviders(): AuthProvider[] {
-		return createProviders(this.config.providers, this.adapter);
+		return createProviders(this.config.providers, this.config.security, this.adapter);
 	}
 
 	// Create authentication middleware
@@ -165,10 +166,26 @@ export class GuardianAuth {
 				const passwordPolicy = this.config.security?.passwordPolicy
 				const validPassword = validatePassword(data.password, passwordPolicy)
 				if(!validPassword?.success) return {success:false, error: validPassword.message}
+   
+      // Check if user already exists
+      const existingUser = await adapter.getUserByEmail(data.email)
+
+      if (existingUser) {
+        throw new RegistrationError('User with this email already exists')
+      }
+
 
 				const hashedPassword = await hashPassword(data.password);
 				
-				const user = await adapter.createUser({ ...data, password: hashedPassword });
+				const user = await adapter.createUser({
+  				  ...data, 
+  				  password: hashedPassword,
+  				  emailVerified: false,
+            emailVerificationToken: uuidv4(),
+            lastLoginAt: null,
+            loginAttempts: 0,
+            isLocked: false
+				});
 
 				const account = await adapter.linkAccount({
 					userId: user.id,
@@ -176,10 +193,13 @@ export class GuardianAuth {
 					provider: 'credentials',
 					providerAccountId: user.id
 				});
+				
+				// TODO  send verification email
+			
 				return {success: true, user};
 			} catch (error) {
 				this.logger.error('Unable to create user', error);
-			throw new Error(error)
+			throw new RegistrationError(error)
 			
 			return {
 			  success:false,
