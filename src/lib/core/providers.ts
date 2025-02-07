@@ -2,12 +2,12 @@ import GoogleProvider from '@auth/core/providers/google';
 import GitHubProvider from '@auth/core/providers/github';
 import CredentialsProvider from '@auth/core/providers/credentials';
 import type { Provider } from '@auth/core/providers';
-import type { Adapter } from "@auth/core/adapters"
- 
+import type { Adapter } from '@auth/core/adapters';
+
 import type { GuardianAuthConfig } from '../types/config.js';
 import { validateCredentials } from '../utils/validation.js';
 import { verifyPassword } from '../utils/security.js';
-import { AuthenticationError } from './errors.js'
+import { AuthenticationError } from './errors.js';
 export type AuthProvider = Provider;
 
 export function createProviders(
@@ -18,7 +18,7 @@ export function createProviders(
 	const providers: AuthProvider[] = [];
 
 	// Google Provider
-	if (providerConfig.google?.enabled) {
+	if (providerConfig.google?.enabled !== false) {
 		providers.push(
 			GoogleProvider({
 				clientId: providerConfig.google.clientId,
@@ -35,10 +35,10 @@ export function createProviders(
 	}
 
 	// GitHub Provider
-	if (providerConfig.github?.enabled) {
+	if (providerConfig.github?.enabled === true) {
 		providers.push(
 			GitHubProvider({
-				clientId: providerConfig.github.clientId,
+				clientId: providerConfig.github?.clientId,
 				clientSecret: providerConfig.github.clientSecret
 			})
 		);
@@ -61,29 +61,35 @@ export function createProviders(
 					// Validate credentials
 					const isValidCredentials = validateCredentials(email, password);
 					if (!isValidCredentials) {
-						throw new AuthenticationError('Invalid credentials');
+						throw new AuthenticationError('Invalid credentials', 'invalid_credebtials');
 					}
 
 					// Find user and verify password
 					const user = await adapter.getUserByEmail(email);
 
 					if (!user) {
-						throw new AuthenticationError('User not found');
+						throw new AuthenticationError('User not found', 'user_not_found');
+					}
+					//if emailverification is required and user email is unverified
+					if (
+						providerConfig.credentials?.requireEmailVerification &&
+						!user.emailVerified
+					) {
+						throw new AuthenticationError('Email must be verifued', 'unverified_email');
 					}
 
-      // Check account lock status
-      if (user.isLocked && user.lockUntil.getTime() > Date.now()) {
-        throw new AuthenticationError('Account is temporarily locked')
-      }
+					// Check account lock status
+					if (user.isLocked && user.lockUntil.getTime() > Date.now()) {
+						throw new AuthenticationError('Account is temporarily locked', 'account_locked');
+					}
 					const isValidPassword = await verifyPassword(user.password, password);
 
-					
-     if (!isValidPassword) {
-        // Increment login attempts and potentially lock account
-       
-        handleFailedLoginAttempt(user)
-        throw new AuthenticationError('Invalid email or password')
-      }
+					if (!isValidPassword) {
+						// Increment login attempts and potentially lock account
+
+						handleFailedLoginAttempt(user);
+						throw new AuthenticationError('Invalid email or password', 'invalid_credentials');
+					}
 					// Prepare user object for session
 					const sessionUser = {
 						id: user.id,
@@ -100,75 +106,68 @@ export function createProviders(
 						});
 					}
 
+					// Reset login attempts on successful login amd  Update last login
+					const updatedData = {
+						id: user.id,
+						isLocked: false,
+						lockUntil: null,
+						lastLoginAt: new Date(),
+						loginAttempts: 0
+					};
+					const updatedUser = await adapter.updateUser(updatedData);
 
-    // Reset login attempts on successful login amd  Update last login
-      const updatedData = { 
-          id: user.id,
-          isLocked: false,
-          lockUntil: null,
-          lastLoginAt: new Date(),
-          loginAttempts: 0
-      }
-      const updatedUser = await adapter.updateUser(updatedData)
-      
-					return {...sessionUser, ...updatedData};
+					return { ...sessionUser, ...updatedData };
 				}
 			})
 		);
 	}
 
 	return providers;
-	
 
+	// Handle failed login attempts
+	async function handleFailedLoginAttempt(user: any) {
+		const maxLoginAttempts = securityConfig.maxLoginAttempts || 5;
+		const lockDuration = securityConfig.lockoutDuration || 15 * 60 * 1000; // 15 minutes
 
+		const updatedUser = await adapter.updateUser({
+			id: user.id,
+			loginAttempts: user.loginAttempts + 1,
+			isLocked: user.loginAttempts + 1 >= maxLoginAttempts,
+			lockUntil:
+				user.loginAttempts + 1 >= maxLoginAttempts ? new Date(Date.now() + lockDuration) : null
+		});
 
+		return updatedUser;
+	}
 
- // Handle failed login attempts
-  async function handleFailedLoginAttempt(user: any) {
-    const maxLoginAttempts = securityConfig.maxLoginAttempts || 5
-    const lockDuration = securityConfig.lockoutDuration || 15 * 60 * 1000 // 15 minutes
+	// Send email verification
+	async function sendVerificationEmail(user: any) {
+		// TODO Implement email verification logic
+		// Use Nodemailer.
+	}
 
-    const updatedUser = await adapter.updateUser({
-        id: user.id,
-        loginAttempts: user.loginAttempts + 1 ,
-        isLocked: user.loginAttempts + 1 >= maxLoginAttempts,
-        lockUntil: user.loginAttempts + 1 >= maxLoginAttempts 
-          ? new Date(Date.now() + lockDuration) 
-          : null
-    })
+	// Password reset functionality
+	async function initiatePasswordReset(email: string) {
+		const user = await adapter.getUserByEmail(email);
 
-    return updatedUser
-  }
+		if (!user) {
+			throw new AuthenticationError('No account found with this email');
+		}
 
+		const resetToken = uuidv4();
+		const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour from now
 
-  // Send email verification
-   async function sendVerificationEmail(user: any) {
-    // TODO Implement email verification logic
-    // Use Nodemailer.
-  }
+		await adapter.updateUser({
+			id: user.id,
+			passwordResetToken: resetToken,
+			passwordResetExpiry: resetTokenExpiry
+		});
 
-  // Password reset functionality
-  async function initiatePasswordReset(email: string) {
-    const user = await adapter.getUserByEmail(email)
+		// Send password reset email with resetToken
+		await sendPasswordResetEmail(user, resetToken);
+	}
 
-    if (!user) {
-      throw new AuthenticationError('No account found with this email')
-    }
-
-    const resetToken = uuidv4()
-    const resetTokenExpiry = new Date(Date.now() + 3600000) // 1 hour from now
-
-    await adapter.updateUser({ 
-        id: user.id,
-        passwordResetToken: resetToken,
-        passwordResetExpiry: resetTokenExpiry
-      })
-
-    // Send password reset email with resetToken
-    await sendPasswordResetEmail(user, resetToken)
-  }
-
-  function  sendPasswordResetEmail(user: any, token: string) {
-    // TODO Implement email sending logic
-  }
+	function sendPasswordResetEmail(user: any, token: string) {
+		// TODO Implement email sending logic
+	}
 }

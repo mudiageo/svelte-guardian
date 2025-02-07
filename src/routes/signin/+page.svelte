@@ -20,13 +20,22 @@
 				callbackUrl: '/auth'
 			});
 			console.log(result);
-			console.log(await result.json());
+			const res = await result.json();
 
 			if (result?.error) {
 				error = 'Invalid email or password';
 			} else {
-				console.log('success?');
-				//		goto('/protect');
+				let url = new URL(res.url);
+				if (url.pathname === '/auth') goto(url.pathname);
+				const errCode = url.searchParams.get('code');
+				switch (errCode) {
+					case 'unverified_email':
+						error = 'Email must be verified';
+						if (confirm('Verify email?')) {
+							goto('/verify-email');
+						}
+						break;
+				}
 			}
 		} catch (e) {
 			error = 'An error occurred. Please try again.';

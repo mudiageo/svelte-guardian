@@ -1,23 +1,26 @@
 import type { Handle } from '@sveltejs/kit';
-import type { AuthConfig } from '@auth/core/types';
+import type { SvelteKitAuthConfig } from '@auth/sveltekit';
 import { SvelteKitAuth } from '@auth/sveltekit';
 import { encode, decode } from '@auth/core/jwt';
-import { createProviders, type AuthProvider } from './providers.js';
-import { getAdapter } from '../adapter.js';
-import { createMiddleware } from './middleware.js';
-import { createEventHandlers } from './events.js';
-import { type GuardianAuthConfig, DefaultGuardianAuthConfig } from '../types/config.js';
-import { createLogger } from './logger.js';
+import { createProviders, type AuthProvider } from './providers';
+import { getAdapter } from '../adapter';
+import { createMiddleware } from './middleware';
+import { createEventHandlers } from './events';
+import { type GuardianAuthConfig, DefaultGuardianAuthConfig } from '../types/config';
+import { createLogger, type LoggerConfig } from './logger';
 import { AUTH_SECRET } from '$env/static/private';
-import { hashPassword } from '../utils/security.js';
-import { validatePassword } from '../utils/validation.js';
-import type { RequestEvent } from '../../routes/$types.js';
-import { AuthenticationError } from './errors.js'
+import { hashPassword } from '../utils/security';
+import { validatePassword, isValidSecurityConfig } from '../utils/validation';
+import { getVerifyEmailActions } from '../features/email-verification';
+import type { RequestEvent } from '../../routes/$types';
+
+import { RegistrationError, ConfigError } from './errors';
+import type { Adapter } from '@auth/core/adapters';
 
 export class GuardianAuth {
 	private config: GuardianAuthConfig;
 	private logger;
-	private adapter;
+	private adapter: Adapter | null;
 
 	constructor(userConfig: Partial<GuardianAuthConfig> = {}) {
 		// Merge user config with default config
@@ -37,12 +40,12 @@ export class GuardianAuth {
 
 	// Create authentication middleware
 	private createMiddleware(): Handle {
-		return createMiddleware(this.config.security);
+		return createMiddleware(this.config.security, this.adapter);
 	}
 
 	// Initialize authentication
 	public async init() {
-	  	//Get adapter
+		//Get adapter
 		this.adapter = await getAdapter(this.config.database);
 		const providers = this.createProviders();
 		const adapter = this.adapter;
@@ -64,21 +67,45 @@ export class GuardianAuth {
 
 		//If session strategy is databse rewuire databse config
 		if (sessionStrategy === 'database' && !this.config.database) {
-			throw new Error("You must add a databse when setting sessionStrategy to 'database'");
+			throw new ConfigError(
+				"You must configure a database in config.database when setting config.advanced.sessionStrategy to 'database'."
+			);
 		}
+		// Validate SecurityConfignfor emailconfig
+		if (!isValidSecurityConfig(this.config.security))
+			throw new ConfigError(
+				'config.security.emailProvider is rrquired when config.security.emailVerification, passwordReset, or twoFactorAuth options are set.'
+			);
 
 		const response = SvelteKitAuth((event: RequestEvent) => {
-			const authConfig: AuthConfig = {
+			const authConfig: SvelteKitAuthConfig = {
 				adapter,
 				providers,
 				events: createEventHandlers(this.config.events, this.logger),
 				callbacks: {
 					async session(data) {
-						const { session, user } = data;
-						session.user.id = user.id;
-						session.user.name = user.name;
-						session.user.role = user.role;
+						const { session, user, token } = data;
+						if (sessionStrategy === 'jwt') {
+							if (token.sub && session.user) {
+								session.user.id = token.sub;
+							}
 
+							if (token.role && session.user) {
+								session.user.role = token.role;
+							}
+
+							if (session.user) {
+								session.user.isOAuth = token.isOAuth;
+								session.user.isTwoFactorEnabled = token.isTwoFactorEnabled;
+								session.user.name = token.name;
+								session.user.email = token.email;
+							}
+						} else {
+							session.user.id = user.id;
+							session.user.name = user.name;
+							session.user.email = user.email;
+							session.user.role = user.role;
+						}
 						return session;
 					},
 					async jwt({ token, user }) {
@@ -154,37 +181,37 @@ export class GuardianAuth {
 					}
 				},
 				debug: true,
-				trustHost: true,//TODO link to environment variable and explore other options
+				trustHost: true, //TODO link to environment variable and explore other options
 				secret
 			};
+
+			if (this.config.pages) authConfig.pages = this.config.pages;
 
 			return authConfig;
 		});
 
 		const createUser = async (data) => {
 			try {
-				const passwordPolicy = this.config.security?.passwordPolicy
-				const validPassword = validatePassword(data.password, passwordPolicy)
-				if(!validPassword?.success) return {success:false, error: validPassword.message}
-   
-      // Check if user already exists
-      const existingUser = await adapter.getUserByEmail(data.email)
+				const passwordPolicy = this.config.security?.passwordPolicy;
+				const validPassword = validatePassword(data.password, passwordPolicy);
+				if (!validPassword?.success) return { success: false, error: validPassword.message };
 
-      if (existingUser) {
-        throw new RegistrationError('User with this email already exists')
-      }
+				// Check if user already exists
+				const existingUser = await adapter.getUserByEmail(data.email);
 
+				if (existingUser) {
+					return { success: false, error: 'User with this email already exists' };
+				}
 
 				const hashedPassword = await hashPassword(data.password);
-				
+
 				const user = await adapter.createUser({
-  				  ...data, 
-  				  password: hashedPassword,
-  				  emailVerified: false,
-            emailVerificationToken: uuidv4(),
-            lastLoginAt: null,
-            loginAttempts: 0,
-            isLocked: false
+					...data,
+					password: hashedPassword,
+					emailVerified: null,
+					lastLoginAt: null,
+					loginAttempts: 0,
+					isLocked: false
 				});
 
 				const account = await adapter.linkAccount({
@@ -193,27 +220,57 @@ export class GuardianAuth {
 					provider: 'credentials',
 					providerAccountId: user.id
 				});
-				
 				// TODO  send verification email
-			
-				return {success: true, user};
+
+				if (this.config?.providers?.credentials?.requireEmailVerification) {
+					if (this.config?.security?.emailVerification?.enabled === false)
+						return { success: true, user };
+
+					const { sendOTP } = await getVerifyEmailActions(
+						this.config?.security?.emailVerification,
+						this.adapter,
+						this.config?.security?.emailProvider
+					);
+
+					const formData = new FormData();
+					formData.append('email', user.email);
+
+					const request = new Request(new URL('https://localhost:3211'), {
+						method: 'POST',
+						body: formData
+					});
+
+					const result = await sendOTP({ request });
+					console.log(result);
+					if (result.success === false) return result;
+				}
+				return { success: true, user };
 			} catch (error) {
 				this.logger.error('Unable to create user', error);
-			throw new RegistrationError(error)
-			
-			return {
-			  success:false,
-			  error: 'errorMessages', 
-			};
+				throw new RegistrationError(error);
 
+				return {
+					success: false,
+					error: 'errorMessages'
+				};
 			}
 		};
-
-		return {
+		let hooksAndActions = {
 			...response,
-			createUser,
-			middleware
+			middleware,
+			createUser
 		};
+
+		if (this.config?.security?.emailVerification) {
+			const verifyEmailActions = await getVerifyEmailActions(
+				this.config?.security?.emailVerification,
+				this.adapter,
+				this.config?.security?.emailProvider
+			);
+			hooksAndActions = { ...hooksAndActions, verifyEmailActions };
+		}
+
+		return hooksAndActions;
 	}
 
 	// Advanced methods for runtime configuration

@@ -1,5 +1,5 @@
 import type { Adapter } from '@auth/core/adapters';
-import { optionalImport } from './utils'
+import { optionalImport } from './utils';
 
 // Comprehensive database provider types
 export type DatabaseProviderType =
@@ -73,9 +73,10 @@ export type DatabaseConfig =
 	| SupabaseConfig
 	| CustomAdapterConfig;
 
-
 // Adapter creation utility
-export const createDatabaseAdapter = async (config: DatabaseConfig): Promise<Adapter | null> => {
+export const createDatabaseAdapter = async (
+	config: DatabaseConfig | undefined
+): Promise<Adapter | null> => {
 	if (!config) return null;
 
 	switch (config.type) {
@@ -119,21 +120,25 @@ export const createDatabaseAdapter = async (config: DatabaseConfig): Promise<Ada
 };
 // TODO Implement Database connection utility
 
-export const getUserByEmail = async (config: DatabaseConfig, email: string) => {
+export const getUserByCustomIdentifier = async (
+	config: DatabaseConfig,
+	customField: stting,
+	identifier: string
+) => {
 	if (!config) throw new Error('Database configuration is required');
 
-	if (!email) return null;
+	if (!identifier) return null;
 
 	let user = {};
 	switch (config.type) {
 		case 'prisma':
-			user = await config.client.user.findUnique({ where: { email } });
+			user = await config.client.user.findUnique({ where: { [customField]: identifier } });
 			console.log(user);
 			return user;
 
-		//For now, user has to supply  getUserByEmail function. Hopefully Auth.js would agree to add it to thr adspter specification
+		//For now, user has to supply  getUserByCustomIdentifier function.
 		case 'custom':
-			user = await config.getUserByEmail(email);
+			user = await config.getUserByCustomIdentifier?.(identifier);
 			console.log(user);
 			return user;
 
