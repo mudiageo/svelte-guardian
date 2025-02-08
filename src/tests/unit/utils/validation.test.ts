@@ -204,11 +204,12 @@ describe('Validation Utils', () => {
 		  // Edge Case Tests
 		  describe('Edge Cases', () => {
 		    it('should handle empty string', () => {
-		      expect(validatePassword('').message).toContain(/at least/);
+
+		      expect(validatePassword('').message).toContain('Password must not be empty');
 		    });
 
 		    it('should handle string with only whitespace', () => {
-		      expect(validatePassword('    ').message).toThrow(/at least/);
+		      expect(validatePassword('    ').message).toContain('Password must not be empty');
 		    });
 
 		    it('should correctly escape special characters in regex', () => {

@@ -31,6 +31,7 @@ export const DEFAULT_SPECIAL_CHARS = '!@#$%^&*()_+-=[]{}|;:,.<>?';
 // Validate password
 export function validatePassword(password: string, passwordPolicy?: SecurityConfig["passwordPolicy"]): {success: boolean, message?: any} {
 	try {
+		if(!password || !password.trim()) return {success:false, message: ['Password must not be empty']}
 
 		if(passwordPolicy === undefined) passwordPolicy = {}
 		const {
