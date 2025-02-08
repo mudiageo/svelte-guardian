@@ -12,6 +12,7 @@ export interface EmailVerificationOptions {
 	method: 'otp' | 'magic-link';
 	otpLength?: number;
 	otpExpiration?: number; // in minutes
+	tokenExpiration?: number; // in minutes
 	enabled?: boolean;
 }
 
