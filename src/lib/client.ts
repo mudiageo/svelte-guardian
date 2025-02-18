@@ -4,14 +4,14 @@ import type { EmailVerificationOptions, PasswordResetOptions, TwoFactorAuthOptio
 interface ApiResponse {
 	success: boolean;
 	error?: string;
-	data?: any;
+	data?: unknown;
 }
 
 // Utility function for API calls
 async function apiCall(
 	endpoint: string,
 	method: 'GET' | 'POST' = 'POST',
-	data?: any
+	data?: unknown
 ): Promise<ApiResponse> {
 	try {
 		const response = await fetch(`/auth/${endpoint}`, {
@@ -83,7 +83,7 @@ export const emailVerification = {
 export const passwordReset = {
 	// Request password reset
 	async requestReset(email: string): Promise<ApiResponse> {
-		return await apiCall('reset-password/request', 'POST', { email });
+		return await apiCall('reset-password/initiate-reset', 'POST', { email });
 	},
 
 	// Validate reset token
@@ -93,6 +93,7 @@ export const passwordReset = {
 
 	// Reset password
 	async resetPassword(
+		email: string,
 		token: string,
 		newPassword: string,
 		confirmPassword: string
@@ -105,6 +106,7 @@ export const passwordReset = {
 		}
 
 		return await apiCall('reset-password/reset', 'POST', {
+			email,
 			token,
 			newPassword
 		});

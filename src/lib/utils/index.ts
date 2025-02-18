@@ -51,6 +51,7 @@ export const convertEventRequestBodyFromJsonToFormData = async (event: RequestEv
 			headers: event.request.headers,
 			body: newFormData
 		});
+		newRequest.formData = () => formData;
 
 		// Create a new event object with the updated request
 		return {

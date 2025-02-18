@@ -5,16 +5,10 @@ import type { Adapter } from '@auth/core/adapters';
 import { sequence } from '@sveltejs/kit/hooks';
 import { json, redirect } from '@sveltejs/kit';
 
-import { getVerifyEmailEndpoints } from '../features/endpoints/verify-email';
+import { getEndpoints } from '../features/endpoints';
 
 export function createMiddleware(securityConfig: SecurityConfig, adapter: Adapter): Handle {
-	const endpoints = {
-		...getVerifyEmailEndpoints(
-			securityConfig.emailVerification,
-			adapter,
-			securityConfig.emailProvider
-		)
-	};
+	const endpoints = getEndpoints(securityConfig, adapter, securityConfig.emailProvider) || {};
 	const authMiddleware: Handle = async ({ event, resolve }) => {
 		const session = await event.locals.auth();
 		const routeProtection = securityConfig?.routeProtection;

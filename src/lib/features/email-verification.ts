@@ -1,4 +1,4 @@
-import { sendEmail, type EmailOptions } from '$lib/email';
+import { sendEmail } from '$lib/email';
 import type { Actions } from '@sveltejs/kit';
 import type { Adapter } from '@auth/core/adapters';
 import type { EmailVerificationOptions } from '../types/config';
@@ -94,7 +94,7 @@ export class EmailVerificationService {
 			}
 			// Mark email as verified and remove verification record
 			await this.adapter.updateUser({
-			  id: existingUser.id,
+				id: existingUser.id,
 				email,
 				emailVerified: new Date()
 			});

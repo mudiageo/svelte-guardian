@@ -28,7 +28,7 @@
 		error = '';
 
 		const result = await emailVerification.verifyOTP(email, otp);
-console.log(result)
+		console.log(result);
 		if (result.success) {
 			// Redirect to success page or dashboard
 			goto('/auth/verified');

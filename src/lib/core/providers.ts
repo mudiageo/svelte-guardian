@@ -4,10 +4,10 @@ import CredentialsProvider from '@auth/core/providers/credentials';
 import type { Provider } from '@auth/core/providers';
 import type { Adapter } from '@auth/core/adapters';
 
-import type { GuardianAuthConfig } from '../types/config.js';
-import { validateCredentials } from '../utils/validation.js';
-import { verifyPassword } from '../utils/security.js';
-import { AuthenticationError } from './errors.js';
+import type { GuardianAuthConfig } from '../types/config';
+import { validateCredentials } from '../utils/validation';
+import { verifyPassword } from '../utils/security';
+import { AuthenticationError } from './errors';
 export type AuthProvider = Provider;
 
 export function createProviders(
@@ -21,8 +21,8 @@ export function createProviders(
 	if (providerConfig.google?.enabled !== false) {
 		providers.push(
 			GoogleProvider({
-				clientId: providerConfig.google.clientId,
-				clientSecret: providerConfig.google.clientSecret,
+				clientId: providerConfig?.google?.clientId,
+				clientSecret: providerConfig?.google?.clientSecret,
 				authorization: {
 					params: {
 						prompt: 'consent',
@@ -61,7 +61,7 @@ export function createProviders(
 					// Validate credentials
 					const isValidCredentials = validateCredentials(email, password);
 					if (!isValidCredentials) {
-						throw new AuthenticationError('Invalid credentials', 'invalid_credebtials');
+						throw new AuthenticationError('Invalid credentials', 'invalid_credentials');
 					}
 
 					// Find user and verify password
@@ -71,10 +71,7 @@ export function createProviders(
 						throw new AuthenticationError('User not found', 'user_not_found');
 					}
 					//if emailverification is required and user email is unverified
-					if (
-						providerConfig.credentials?.requireEmailVerification &&
-						!user.emailVerified
-					) {
+					if (providerConfig.credentials?.requireEmailVerification && !user.emailVerified) {
 						throw new AuthenticationError('Email must be verifued', 'unverified_email');
 					}
 
@@ -138,36 +135,5 @@ export function createProviders(
 		});
 
 		return updatedUser;
-	}
-
-	// Send email verification
-	async function sendVerificationEmail(user: any) {
-		// TODO Implement email verification logic
-		// Use Nodemailer.
-	}
-
-	// Password reset functionality
-	async function initiatePasswordReset(email: string) {
-		const user = await adapter.getUserByEmail(email);
-
-		if (!user) {
-			throw new AuthenticationError('No account found with this email');
-		}
-
-		const resetToken = uuidv4();
-		const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour from now
-
-		await adapter.updateUser({
-			id: user.id,
-			passwordResetToken: resetToken,
-			passwordResetExpiry: resetTokenExpiry
-		});
-
-		// Send password reset email with resetToken
-		await sendPasswordResetEmail(user, resetToken);
-	}
-
-	function sendPasswordResetEmail(user: any, token: string) {
-		// TODO Implement email sending logic
 	}
 }

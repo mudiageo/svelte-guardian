@@ -17,7 +17,7 @@
 				email,
 				password,
 				redirect: false,
-				callbackUrl: '/auth'
+				callbackUrl: '/dashboard'
 			});
 			console.log(result);
 			const res = await result.json();
@@ -26,13 +26,28 @@
 				error = 'Invalid email or password';
 			} else {
 				let url = new URL(res.url);
-				if (url.pathname === '/auth') goto(url.pathname);
+				if (url.pathname === '/dashboard') goto(url.pathname);
 				const errCode = url.searchParams.get('code');
+				console.log(errCode);
 				switch (errCode) {
 					case 'unverified_email':
 						error = 'Email must be verified';
 						if (confirm('Verify email?')) {
 							goto('/verify-email');
+						}
+						break;
+
+					case 'account_not_found':
+						error = 'No account found with this email';
+						if (confirm('Signup?')) {
+							goto('/signup');
+						}
+						break;
+					case 'account_not_found':
+						error = 'Invalid credentuals';
+
+						if (confirm('Signup?')) {
+							goto('/signup');
 						}
 						break;
 				}

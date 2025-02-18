@@ -1,5 +1,10 @@
 import nodemailer from 'nodemailer';
-import { EmailOptions, EmailProvider, EMAIL_SERVICE_CONFIGS } from '../types';
+import {
+	type EmailOptions,
+	type EmailProvider,
+	type NodemailerServiceConfig,
+	EMAIL_SERVICE_CONFIGS
+} from '../types';
 import { html, text, validateNodemailerServiceConfig } from '../utils';
 
 // Define types for configuration
@@ -25,9 +30,9 @@ export class NodemailerProvider implements EmailProvider {
 	private transporter: nodemailer.Transporter;
 	private from: string;
 
-	constructor(config: EmailProviderConfig) {
-		console.log('transporter', this.createTransporter);
-		this.transporter = this.createTransporter(config as NodemailerServiceConfig);
+	constructor(config: NodemailerServiceConfig) {
+		this.transporter = this.createTransporter(config);
+		this.from = '';
 	}
 
 	// Create transporter based on service configuration
@@ -40,8 +45,6 @@ export class NodemailerProvider implements EmailProvider {
 
 		// Configure authentication
 		const auth = this.configureAuth(config);
-		console.log(auth);
-		console.log(smtpConfig);
 		// Create transporter
 		return nodemailer.createTransport({
 			host: smtpConfig.host,
