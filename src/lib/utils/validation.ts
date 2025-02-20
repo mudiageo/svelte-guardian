@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { type SecurityConfig } from '../types/config.js'
+import { type SecurityConfig } from '../types/config.js';
 const emailSchema = z
 	.string()
 	.email('Invalid email address')
@@ -29,11 +29,15 @@ export function validateEmail(email: string): boolean {
 export const DEFAULT_SPECIAL_CHARS = '!@#$%^&*()_+-=[]{}|;:,.<>?';
 
 // Validate password
-export function validatePassword(password: string, passwordPolicy?: SecurityConfig["passwordPolicy"]): {success: boolean, message?: any} {
+export function validatePassword(
+	password: string,
+	passwordPolicy?: SecurityConfig['passwordPolicy']
+): { success: boolean; message?: any } {
 	try {
-		if(!password || !password.trim()) return {success:false, message: ['Password must not be empty']}
+		if (!password || !password.trim())
+			return { success: false, message: ['Password must not be empty'] };
 
-		if(passwordPolicy === undefined) passwordPolicy = {}
+		if (passwordPolicy === undefined) passwordPolicy = {};
 		const {
 			minLength = 8,
 			maxLength = 64,
@@ -43,85 +47,96 @@ export function validatePassword(password: string, passwordPolicy?: SecurityConf
 			requireSpecialChars = true,
 			specialChars = DEFAULT_SPECIAL_CHARS
 		} = passwordPolicy;
-		
-		let passwordSchema = z.string()
+
+		let passwordSchema = z
+			.string()
 			.min(minLength, { message: `Password must be at least ${minLength} characters long` })
 			.max(maxLength, { message: `Password must be no more than ${maxLength} characters long` });
-		
-		  // Uppercase check
-		  if (requireUppercase !== false) {
+
+		// Uppercase check
+		if (requireUppercase !== false) {
 			const minUppercase = typeof requireUppercase === 'number' ? requireUppercase : 1;
 			passwordSchema = passwordSchema.refine(
-			  (val) => {
-				const uppercaseCount = (val.match(/[A-Z]/g) || []).length;
-				return uppercaseCount >= minUppercase;
-			  }, 
-			  { message: minUppercase === 1 
-				? 'Password must contain at least one uppercase letter' 
-				: `Password must contain at least ${minUppercase} uppercase letters` }
+				(val) => {
+					const uppercaseCount = (val.match(/[A-Z]/g) || []).length;
+					return uppercaseCount >= minUppercase;
+				},
+				{
+					message:
+						minUppercase === 1
+							? 'Password must contain at least one uppercase letter'
+							: `Password must contain at least ${minUppercase} uppercase letters`
+				}
 			);
-		  }
-		
-		  // Lowercase check
-		  if (requireLowercase !== false) {
+		}
+
+		// Lowercase check
+		if (requireLowercase !== false) {
 			const minLowercase = typeof requireLowercase === 'number' ? requireLowercase : 1;
 			passwordSchema = passwordSchema.refine(
-			  (val) => {
-				const lowercaseCount = (val.match(/[a-z]/g) || []).length;
-				return lowercaseCount >= minLowercase;
-			  }, 
-			  { message: minLowercase === 1 
-				? 'Password must contain at least one lowercase letter' 
-				: `Password must contain at least ${minLowercase} lowercase letters` }
+				(val) => {
+					const lowercaseCount = (val.match(/[a-z]/g) || []).length;
+					return lowercaseCount >= minLowercase;
+				},
+				{
+					message:
+						minLowercase === 1
+							? 'Password must contain at least one lowercase letter'
+							: `Password must contain at least ${minLowercase} lowercase letters`
+				}
 			);
-		  }
-		
-		  // Numbers check
-		  if (requireNumbers !== false) {
+		}
+
+		// Numbers check
+		if (requireNumbers !== false) {
 			const minNumbers = typeof requireNumbers === 'number' ? requireNumbers : 1;
 			passwordSchema = passwordSchema.refine(
-			  (val) => {
-				const numberCount = (val.match(/[0-9]/g) || []).length;
-				return numberCount >= minNumbers;
-			  }, 
-			  { message: minNumbers === 1 
-				? 'Password must contain at least one number' 
-				: `Password must contain at least ${minNumbers} numbers` }
+				(val) => {
+					const numberCount = (val.match(/[0-9]/g) || []).length;
+					return numberCount >= minNumbers;
+				},
+				{
+					message:
+						minNumbers === 1
+							? 'Password must contain at least one number'
+							: `Password must contain at least ${minNumbers} numbers`
+				}
 			);
-		  }
-		
-		  // Special characters check
-		  if (requireSpecialChars !== false) {
+		}
+
+		// Special characters check
+		if (requireSpecialChars !== false) {
 			const minSpecialChars = typeof requireSpecialChars === 'number' ? requireSpecialChars : 1;
 			const escapedSpecialChars = specialChars.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-			
-			passwordSchema = passwordSchema.refine(
-			  (val) => {
-				const specialCharCount = (val.match(new RegExp(`[${escapedSpecialChars}]`, 'g')) || []).length;
-				return specialCharCount >= minSpecialChars;
-			  }, 
-			  { message: minSpecialChars === 1 
-				? `Password must contain at least one special character from: ${specialChars}` 
-				: `Password must contain at least ${minSpecialChars} special characters from: ${specialChars}` }
-			);
-		  }
-		
 
-		  
-		passwordSchema.parse(password);
-		return {success: true, message: ['Password is okay']};
-	} catch (error){
-		if (error instanceof z.ZodError) {
-			const errorMessages = error.errors.map(e => e.message)
-			
-			return {
-			  success:false,
-			  message: errorMessages, // Plain text error message
-			  // You can add more properties for styling or other frontend-specific needs
-			};
-			
+			passwordSchema = passwordSchema.refine(
+				(val) => {
+					const specialCharCount = (val.match(new RegExp(`[${escapedSpecialChars}]`, 'g')) || [])
+						.length;
+					return specialCharCount >= minSpecialChars;
+				},
+				{
+					message:
+						minSpecialChars === 1
+							? `Password must contain at least one special character from: ${specialChars}`
+							: `Password must contain at least ${minSpecialChars} special characters from: ${specialChars}`
+				}
+			);
 		}
-		throw Error(error)
+
+		passwordSchema.parse(password);
+		return { success: true, message: ['Password is okay'] };
+	} catch (error) {
+		if (error instanceof z.ZodError) {
+			const errorMessages = error.errors.map((e) => e.message);
+
+			return {
+				success: false,
+				message: errorMessages // Plain text error message
+				// You can add more properties for styling or other frontend-specific needs
+			};
+		}
+		throw Error(error);
 	}
 }
 
@@ -149,4 +164,20 @@ const registrationSchema = z.object({
 // Validate full registration
 export function validateRegistration(data: unknown) {
 	return registrationSchema.parse(data);
+}
+
+// Type guard to validate email provider requirement
+export function isValidSecurityConfig(config: SecurityConfig): boolean {
+	// Check if email provider is required based on specific features
+	const requiresEmailProvider =
+		config.emailVerification !== undefined ||
+		config.passwordReset !== undefined ||
+		config.twoFactorAuth !== undefined;
+
+	// If any of those features are set, email provider must be present
+	if (requiresEmailProvider && !config.emailProvider) {
+		return false;
+	}
+
+	return true;
 }

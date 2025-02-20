@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { preventDefault } from 'svelte/legacy';
 	import type { PageData, ActionData } from './$types';
+	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 	import { signIn } from '@auth/sveltekit/client';
 
@@ -14,7 +15,10 @@
 	});
 
 	let error = $state(form?.error || '');
-
+	$effect(() => {
+		console.log(form?.error);
+		error = form?.error;
+	});
 	async function handleSubmit() {
 		if (formData.password !== formData.confirmPassword) {
 			error = 'Passwords do not match';
@@ -62,7 +66,10 @@
 				</div>
 			{/if}
 
-			<form class="space-y-6" method="POST">
+			<form class="space-y-6" method="POST" use:enhance>
+				<input type="hidden" name="providerId" value="credentials" />
+				<input type="hidden" name="redirect" value={false} />
+
 				<div>
 					<label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 						Name

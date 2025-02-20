@@ -1,5 +1,5 @@
-import type { User } from '@prisma/client';
+import type { AdapterUser } from '@auth/core/adapters';
 
-export interface ExtendedUser extends User {
+export interface User extends AdapterUser {
 	role?: string;
 }

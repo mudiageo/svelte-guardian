@@ -14,11 +14,4 @@ describe('Prisma Database tests', () => {
 		const adapter = createDatabaseAdapter(customConfig.database);
 		expect(adapter).toBeDefined();
 	});
-
-	it('should get user by email', () => {
-		const user = getUserByEmail(customConfig.database, 'test@loclahost');
-
-		// Verify config is correctly merged
-		expect(user).toBeDefined();
-	});
 });

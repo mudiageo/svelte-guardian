@@ -112,7 +112,7 @@ describe('Validation Utils', () => {
 					'success',
 					true
 				);
-	
+
 				// Should fail with only one special character
 				expect(validatePassword('OneSpecialChar!Pass123', options).message).toContain(
 					`Password must contain at least ${options.requireSpecialChars} special characters from: ${options.specialChars}`
@@ -201,42 +201,43 @@ describe('Validation Utils', () => {
 			});
 		});
 
-		  // Edge Case Tests
-		  describe('Edge Cases', () => {
-		    it('should handle empty string', () => {
+		// Edge Case Tests
+		describe('Edge Cases', () => {
+			it('should handle empty string', () => {
+				expect(validatePassword('').message).toContain('Password must not be empty');
+			});
 
-		      expect(validatePassword('').message).toContain('Password must not be empty');
-		    });
+			it('should handle string with only whitespace', () => {
+				expect(validatePassword('    ').message).toContain('Password must not be empty');
+			});
 
-		    it('should handle string with only whitespace', () => {
-		      expect(validatePassword('    ').message).toContain('Password must not be empty');
-		    });
+			it('should correctly escape special characters in regex', () => {
+				const options = {
+					specialChars: '^$*.[]{}()+?\\',
+					requireSpecialChars: true
+				};
 
-		    it('should correctly escape special characters in regex', () => {
-		      const options = {
-		        specialChars: '^$*.[]{}()+?\\',
-		        requireSpecialChars: true
-		      };
-
-		      // Should pass with escaped special characters
-		      expect(validatePassword('ValidPass123^', options)).toHaveProperty('success', true);
-		      expect(validatePassword('ValidPass123$', options)).toHaveProperty('success', true);
-		      expect(validatePassword('ValidPass123.', options)).toHaveProperty('success', true);
-		    });
-		  });
-
+				// Should pass with escaped special characters
+				expect(validatePassword('ValidPass123^', options)).toHaveProperty('success', true);
+				expect(validatePassword('ValidPass123$', options)).toHaveProperty('success', true);
+				expect(validatePassword('ValidPass123.', options)).toHaveProperty('success', true);
+			});
+		});
+    
 		// Performance and Boundary Tests
 		describe('Performance and Boundary Conditions', () => {
 			it('should handle very long passwords within max length', () => {
 				const longPassword = 'A'.repeat(61) + 'a1!';
-				console.log(longPassword.length)
+				console.log(longPassword.length);
 				expect(validatePassword(longPassword)).toHaveProperty('success', true);
 			});
 
 			it('should enforce max length strictly', () => {
 				const options = { maxLength: 10 };
 				const tooLongPassword = 'A'.repeat(11) + '1!';
-				expect(validatePassword(tooLongPassword, options).message).toContain(`Password must be no more than ${options.maxLength} characters long`);
+				expect(validatePassword(tooLongPassword, options).message).toContain(
+					`Password must be no more than ${options.maxLength} characters long`
+				);
 			});
 		});
 	});

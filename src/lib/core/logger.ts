@@ -17,21 +17,22 @@ class GuardianLogger {
 
 		if (messageLevelIndex >= currentLevelIndex) {
 			const timestamp = new Date().toISOString();
-			const logPrefix = `[SVELTE-GUARDIAN][${level.toUpperCase()}][${timestamp}] `
-			switch(level){
-			  case 'debug':
-			  console.debug(logPrefix, message, data || '');
-			  break;
-			  case 'info':
-			  console.info(logPrefix, message, data || '');
-			  break;
-			  case 'warn':
-			  console.warn(logPrefix, message, data || '');
-			  break;
-			  case 'error':
-			  console.error(logPrefix, message, data || '');
-			  break;
-			  default: console.log(logPrefix, message, data || '');
+			const logPrefix = `[SVELTE-GUARDIAN][${level.toUpperCase()}][${timestamp}] `;
+			switch (level) {
+				case 'debug':
+					console.debug(logPrefix, message, data || '');
+					break;
+				case 'info':
+					console.info(logPrefix, message, data || '');
+					break;
+				case 'warn':
+					console.warn(logPrefix, message, data || '');
+					break;
+				case 'error':
+					console.error(logPrefix, message, data || '');
+					break;
+				default:
+					console.log(logPrefix, message, data || '');
 			}
 		}
 	}
@@ -53,7 +54,7 @@ class GuardianLogger {
 	}
 }
 
-export function createLogger(loggerConfig: LoggerConfig) {
+export function createLogger(loggerConfig: LoggerConfig | undefined) {
 	return new GuardianLogger(loggerConfig);
 }
 interface Destination {
@@ -68,5 +69,5 @@ interface Destination {
 export interface LoggerConfig {
 	enabled?: boolean;
 	level?: 'debug' | 'info' | 'warn' | 'error';
-	destination?: Destination[];
+	destinations?: Destination[];
 }

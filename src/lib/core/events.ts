@@ -6,7 +6,7 @@ export function createEventHandlers(events, logger) {
 			console.log('session event');
 			logger.info(message);
 		},
-		signIn: (message) => null,
+		signIn: (message) => logger.info(message),
 		signOut: (message) => logger.info(message),
 		updateUser: (message) => logger.info(message)
 	};
