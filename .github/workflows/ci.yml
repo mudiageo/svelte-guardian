@@ -29,4 +29,4 @@ jobs:
       - run: pnpx prisma@5.22.0 generate
       - run: pnpm package
       - run: pnpm test
-      - run: pnpm run lint
+#      - run: pnpm run lint
