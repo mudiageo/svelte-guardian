@@ -223,7 +223,7 @@ describe('Validation Utils', () => {
 				expect(validatePassword('ValidPass123.', options)).toHaveProperty('success', true);
 			});
 		});
-
+    
 		// Performance and Boundary Tests
 		describe('Performance and Boundary Conditions', () => {
 			it('should handle very long passwords within max length', () => {
