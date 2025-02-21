@@ -4,9 +4,12 @@ Batteries included authentication for SvelteKit applications.
 
 ## 🚀 Features
 
-- Secure credentuals authentication
+- Secure credentials authentication
 - Multiple authentication providers
 - Robust security measures
+- Email verificatiom
+- Password reset
+- Role-based route protection
 - Flexible configuration
 - Comprehensive logging
 - Two-factor authentication support (incoming)
@@ -223,23 +226,21 @@ export const { handle } = guardianAuth({
 
 ## Note:
 
-To use this library, use must use prisma
-Plans are in place to migrate from this prisma-centric approach. In the meantime, check out the example schema in src/prisma/schema.prisma.
+To use this library, check out the example schema in src/prisma/schema.prisma and adapt it to whatever database provider you would use with this library. More info would soon be available in the documentation.
 
 ## Roadmap and Feature Planning
 
 Immediate Priorities (v0.2.0)
 Role-based Route Protection
-Custom Event Handlers
-Multi-Session Management
 Logging System
-Multi-Database Provider Support
 Comprehensive Documentation
 Robust Error Handling Middleware
 Customizable Password Policies
 
 Short-term Goals (v0.3.0)
 Rate Limiting and Brute Force Protection
+Custom Event Handlers
+Multi-Session Management
 Social Account Linking
 Additional Authentication Providers
 
@@ -261,7 +262,6 @@ Internationalization (i18n) Support
 - [ ] Implement two factor auth, rate limiting, refresh token rotation
 - [ ] Create comprehensive documentation site
 - [ ] Add more authentication providers and database providers
-- [ ] Implement more granular role-based access control
 - [ ] Develop admin dashboard for user management
 
 ## 🤝 Contributing
