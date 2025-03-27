@@ -1,3 +1,4 @@
+import crypto  from 'crypto';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const argon2 = process.env.NODE_ENV === 'development' ? await import('argon2') : require('argon2');
@@ -18,7 +19,7 @@ export const verifyPassword = async (
 
 // Generate cryptographically secure tokens
 export const generateSecureToken = async (length = 32): Promise<string> => {
-	return crypto.randomUUID();
+	return crypto.randomBytes(length).toString('hex');
 };
 
 // Timing-safe string comparison
