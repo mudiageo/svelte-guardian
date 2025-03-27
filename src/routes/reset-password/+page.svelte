@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 	import { passwordReset } from '$lib/client';
 
 	let email = $page.url.searchParams.get('email') || '';
