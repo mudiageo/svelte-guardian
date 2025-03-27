@@ -8,7 +8,7 @@ class GuardianLogger {
 		};
 	}
 
-	private log(level: string, message: string, data?: any) {
+	private log(level: string, message: string, data?: unknown) {
 		if (!this.config.enabled) return;
 
 		const logLevels = ['debug', 'info', 'warn', 'error'];
@@ -37,19 +37,19 @@ class GuardianLogger {
 		}
 	}
 
-	debug(message: string, data?: any) {
+	debug(message: string, data?: unknown) {
 		this.log('debug', message, data);
 	}
 
-	info(message: string, data?: any) {
+	info(message: string, data?: unknown) {
 		this.log('info', message, data);
 	}
 
-	warn(message: string, data?: any) {
+	warn(message: string, data?: unknown) {
 		this.log('warn', message, data);
 	}
 
-	error(message: string, data?: any) {
+	error(message: string, data?: unknown) {
 		this.log('error', message, data);
 	}
 }
