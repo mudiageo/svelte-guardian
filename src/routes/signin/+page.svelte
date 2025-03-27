@@ -43,7 +43,7 @@
 						}
 						break;
 					case 'invalid_credentials':
-						error = 'Invalid credentuals';
+						error = 'Invalid credentials';
 				
 						if (confirm('Signup?')) {
 							goto('/signup');

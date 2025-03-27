@@ -4,7 +4,7 @@ import { sendEmail } from '$lib/email';
 import type { Adapter } from '@auth/core/adapters';
 import type { EmailVerificationOptions } from '$lib/types/config';
 import type { EmailProviderConfig } from '$lib/email/types';
-
+import crypto from 'crypto';
 // Mock dependencies
 vi.mock('$lib/email', () => ({
 	sendEmail: vi.fn()
@@ -49,21 +49,23 @@ describe('EmailVerificationService', () => {
 
 	afterEach(() => {
 		vi.resetAllMocks();
-		global.crypto;
 	});
 
 	describe('sendOTP', () => {
 		it('should generate and send OTP of specified length', async () => {
 			const email = 'test@example.com';
-			const mockOtp = '123456';
 
 			// Mock Math.random to return a predictable value
 			const mockMath = Object.create(global.Math);
 			mockMath.random = () => 0.123456;
 			global.Math = mockMath;
-
-			await emailVerificationService.sendOTP(email);
-
+const emailVerificationService = new EmailVerificationService(
+			{...defaultOptions, otpLength:10},
+			mockAdapter,
+			mockEmailProvider
+		);
+		const otp =	await emailVerificationService.sendOTP(email);
+expect(otp).toHaveLength(10);
 			expect(mockAdapter.createVerificationToken).toHaveBeenCalledWith({
 				identifier: email,
 				token: expect.any(String),
