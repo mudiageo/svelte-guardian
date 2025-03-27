@@ -1,8 +1,7 @@
 import type { Actions } from './$types';
-import { PrismaClient } from '@prisma/client';
 import { createUser, signIn } from '$lib/auth';
-import { fail, redirect } from '@sveltejs/kit';
-const prisma = new PrismaClient();
+import { fail } from '@sveltejs/kit';
+
 
 export const actions = {
 	default: async (event) => {
@@ -29,7 +28,6 @@ export const actions = {
 		}
 
 		// log the user in
-		console.log(await signIn(event));
-		console.log('m');
+		await signIn(event)
 	}
 } satisfies Actions;

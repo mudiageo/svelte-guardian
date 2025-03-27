@@ -7,7 +7,7 @@ import { getAdapter } from '../adapter';
 import { createMiddleware } from './middleware';
 import { createEventHandlers } from './events';
 import { type GuardianAuthConfig, DefaultGuardianAuthConfig } from '../types/config';
-import { createLogger, type LoggerConfig } from './logger';
+import { createLogger } from './logger';
 import { AUTH_SECRET } from '$env/static/private';
 import { hashPassword } from '../utils/security';
 import { validatePassword, isValidSecurityConfig } from '../utils/validation';
@@ -214,7 +214,7 @@ export class GuardianAuth {
 					isLocked: false
 				});
 
-				const account = await adapter.linkAccount({
+				await adapter.linkAccount({
 					userId: user.id,
 					type: 'credentials',
 					provider: 'credentials',

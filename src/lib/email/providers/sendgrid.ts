@@ -1,4 +1,4 @@
-import { EmailOptions, EmailProvider } from '../types';
+import type { EmailOptions, EmailProvider } from '../types';
 import { text, html } from '../utils';
 
 export class SendGridProvider implements EmailProvider {

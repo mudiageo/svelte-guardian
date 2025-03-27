@@ -7,7 +7,7 @@ export interface EmailOptions {
 	subject: string;
 	type: EmailType;
 	otp?: string; // For OTP, password reset, etc.
-	theme?: any;
+	theme?: string;
 	url?: string; // For magic links, password reset links, etc.
 	customContent?: string; // For custom email types
 }

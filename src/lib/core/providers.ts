@@ -111,7 +111,7 @@ export function createProviders(
 						lastLoginAt: new Date(),
 						loginAttempts: 0
 					};
-					const updatedUser = await adapter.updateUser(updatedData);
+					 await adapter.updateUser(updatedData);
 
 					return { ...sessionUser, ...updatedData };
 				}
@@ -122,7 +122,7 @@ export function createProviders(
 	return providers;
 
 	// Handle failed login attempts
-	async function handleFailedLoginAttempt(user: any) {
+	async function handleFailedLoginAttempt(user) {
 		const maxLoginAttempts = securityConfig.maxLoginAttempts || 5;
 		const lockDuration = securityConfig.lockoutDuration || 15 * 60 * 1000; // 15 minutes
 

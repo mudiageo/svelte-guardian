@@ -42,8 +42,8 @@ export const { handle, signIn, signOut, middleware, createUser } = await guardia
 			from: 'Your Company <your-email@gmail.com>',
 			auth: {
 				method: 'app-password',
-				user: env.GMAIL_USER || 'mudiageo@gmail.com',
-				appPass: env.GMAIL_APP_PASSWORD || 'nnzy cugp vkso klsd'
+				user: env.GMAIL_USER,
+				appPass: env.GMAIL_APP_PASSWORD
 			}
 		},
 		routeProtection: {

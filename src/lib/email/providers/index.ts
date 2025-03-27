@@ -1,4 +1,4 @@
-import { EmailOptions, EmailProvider, EmailProviderConfig } from '../types';
+import type { EmailProvider, EmailProviderConfig } from '../types';
 import { validateEmailProviderConfig } from '../utils';
 import { NodemailerProvider } from './nodemailer';
 import { ResendProvider } from './resend';
@@ -14,6 +14,8 @@ export function createEmailProvider(config: EmailProviderConfig): EmailProvider 
 			return new ResendProvider(config);
 		case 'aws-ses':
 			return new AWSSESProvider(config);
+		case 'sendgrid':
+			return new SendGridProvider(config);
 		case 'nodemailer':
 			return new NodemailerProvider(config);
 		default:

@@ -3,6 +3,7 @@ import type { Actions } from '@sveltejs/kit';
 import type { Adapter } from '@auth/core/adapters';
 import type { EmailVerificationOptions } from '../types/config';
 import type { EmailOptions, EmailProviderConfig } from '../email/types';
+import crypto from 'crypto';
 
 export class EmailVerificationService {
 	private options;
@@ -18,8 +19,10 @@ export class EmailVerificationService {
 		this.adapter = adapter;
 		this.emailProvider = emailProvider;
 	}
-	private generateOTP(length: number = 6): string {
-		return Math.floor(100000 + Math.random() * 900000)
+	private generateOTP(length: number): string {
+	  const min = 1 * (10**length);
+	  const max = 9 * (10**length)
+		return crypto.randomInt(min, max)
 			.toString()
 			.substring(0, length);
 	}

@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
 	import type { PageData, ActionData } from './$types';
 	import { enhance } from '$app/forms';
-	import { goto } from '$app/navigation';
+	
 	import { signIn } from '@auth/sveltekit/client';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
@@ -19,28 +18,7 @@
 		console.log(form?.error);
 		error = form?.error;
 	});
-	async function handleSubmit() {
-		if (formData.password !== formData.confirmPassword) {
-			error = 'Passwords do not match';
-			return;
-		}
-
-		try {
-			const response = await fetch('/api/auth/signup', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(formData)
-			});
-
-			if (response.ok) {
-				goto('/auth/onboarding');
-			} else {
-				error = 'Signup failed. Please try again.';
-			}
-		} catch (e) {
-			error = 'An error occurred. Please try again.';
-		}
-	}
+	
 </script>
 
 {#if form?.success}

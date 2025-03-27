@@ -32,7 +32,7 @@ export const DEFAULT_SPECIAL_CHARS = '!@#$%^&*()_+-=[]{}|;:,.<>?';
 export function validatePassword(
 	password: string,
 	passwordPolicy?: SecurityConfig['passwordPolicy']
-): { success: boolean; message?: any } {
+): { success: boolean; message?: string[] } {
 	try {
 		if (!password || !password.trim())
 			return { success: false, message: ['Password must not be empty'] };
@@ -107,7 +107,7 @@ export function validatePassword(
 		// Special characters check
 		if (requireSpecialChars !== false) {
 			const minSpecialChars = typeof requireSpecialChars === 'number' ? requireSpecialChars : 1;
-			const escapedSpecialChars = specialChars.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+			const escapedSpecialChars = specialChars.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
 
 			passwordSchema = passwordSchema.refine(
 				(val) => {

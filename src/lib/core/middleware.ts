@@ -38,7 +38,7 @@ export function createMiddleware(securityConfig: SecurityConfig, adapter: Adapte
 			);
 
 			if (protectedRoute) {
-				const [route, routeConfig] = protectedRoute;
+				const routeConfig = protectedRoute[1];
 
 				if (!session?.user) {
 					redirect(303, routeConfig.redirectPath || routeProtection?.redirectPath || '/');

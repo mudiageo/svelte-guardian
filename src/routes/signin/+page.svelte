@@ -1,10 +1,9 @@
 <script>
 	import { preventDefault } from 'svelte/legacy';
-	import { enhance } from '$app/forms';
-
+	
 	import { goto } from '$app/navigation';
 	import { signIn } from '$lib/client';
-	import { SignIn } from '@auth/sveltekit/components';
+	
 
 	let email = $state('mudiaga@localhost');
 	let password = $state('Mudiaga@2024');
@@ -28,7 +27,7 @@
 				let url = new URL(res.url);
 				if (url.pathname === '/dashboard') goto(url.pathname);
 				const errCode = url.searchParams.get('code');
-				console.log(errCode);
+				console.log(errCode)
 				switch (errCode) {
 					case 'unverified_email':
 						error = 'Email must be verified';
@@ -43,16 +42,16 @@
 							goto('/signup');
 						}
 						break;
-					case 'account_not_found':
-						error = 'Invalid credentuals';
-
+					case 'invalid_credentials':
+						error = 'Invalid credentials';
+				
 						if (confirm('Signup?')) {
 							goto('/signup');
 						}
 						break;
 				}
 			}
-		} catch (e) {
+		} catch  {
 			error = 'An error occurred. Please try again.';
 		}
 	}
