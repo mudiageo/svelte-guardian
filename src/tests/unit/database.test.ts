@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getUserByEmail, createDatabaseAdapter } from '../../lib/database.js';
+import { createDatabaseAdapter } from '../../lib/database.js';
 import { PrismaClient } from '@prisma/client';
 
 describe('Prisma Database tests', () => {
