@@ -7,25 +7,6 @@ import {
 } from '../types';
 import { html, text, validateNodemailerServiceConfig } from '../utils';
 
-// Define types for configuration
-type SimpleSmtpConfig = {
-	type: 'simple';
-	host: string;
-	port: number;
-	auth: {
-		user: string;
-		pass: string;
-	};
-	secure?: boolean;
-};
-
-type AdvancedTransportConfig = {
-	type: 'advanced';
-	transport: nodemailer.TransportOptions;
-};
-
-type EmailProviderConfig = SimpleSmtpConfig | AdvancedTransportConfig;
-
 export class NodemailerProvider implements EmailProvider {
 	private transporter: nodemailer.Transporter;
 	private from: string;

@@ -155,6 +155,7 @@ export function text(params: EmailParams): string {
 			break;
 		case 'custom':
 			content = customContent || '';
+			break;
 		default:
 			throw new Error(`Unsupported email type: ${type}`);
 	}
@@ -240,8 +241,8 @@ export function validateNodemailerServiceConfig(config: NodemailerServiceConfig)
 }
 
 // Type guard to check if configuration is for a specific email service
-export function isNodemailerServiceConfig(config: any): config is NodemailerServiceConfig {
-	return config.type === 'nodemailer' && config.service in EmailService;
+export function isNodemailerServiceConfig(config: NodemailerServiceConfig): boolean {
+	return config.type === 'nodemailer' && config.service in EMAIL_SERVICE_CONFIGS;
 }
 
 // Utility function to get SMTP configuration for a service
