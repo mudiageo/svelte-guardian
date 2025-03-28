@@ -1,7 +1,7 @@
 import { Redis } from '@upstash/redis';
 import type { RequestEvent } from '@sveltejs/kit';
 
-export class UostashRedisRateLimiter {
+export class UpstashRedisRateLimiter {
 	private redis: Redis;
 
 	constructor(redisUrl: string, redisToken: string) {

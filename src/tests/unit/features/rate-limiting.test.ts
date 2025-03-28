@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { RateLimiterFactory, RateLimitConfig } from '$lib/features/rate-limiting';
-import { UostashRedisRateLimiter } from '$lib/features/rate-limiting/upstash-redis';
+import { UpstashRedisRateLimiter } from '$lib/features/rate-limiting/upstash-redis';
 import { RedisRateLimiter } from '$lib/features/rate-limiting/redis';
 import { InMemoryRateLimiter } from '$lib/features/rate-limiting/in-memory';
 import Redis from 'redis';
@@ -66,7 +66,7 @@ describe('RateLimiterFactory', () => {
   });
 });
 
-describe('UostashRedisRateLimiter', () => {
+describe('UpstashRedisRateLimiter', () => {
   let mockRedis: { 
     exists: vi.Mock, 
     ttl: vi.Mock, 
@@ -74,7 +74,7 @@ describe('UostashRedisRateLimiter', () => {
     expire: vi.Mock, 
     set: vi.Mock 
   };
-  let rateLimiter: UostashRedisRateLimiter;
+  let rateLimiter: UpstashRedisRateLimiter;
   
   beforeEach(() => {
     // Create mock Redis methods
@@ -90,7 +90,7 @@ describe('UostashRedisRateLimiter', () => {
     (UpstashRedis as vi.Mock).mockReturnValue(mockRedis);
 
     // Create a new rate limiter instance
-    rateLimiter = new UostashRedisRateLimiter('test-url', 'test-token');
+    rateLimiter = new UpstashRedisRateLimiter('test-url', 'test-token');
   });
 
   afterEach(() => {
