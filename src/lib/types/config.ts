@@ -1,6 +1,7 @@
 import type { User } from './user';
 import type { LoggerConfig } from '../core/logger';
 import type { DatabaseConfig } from '../database';
+import type { RateLimitingConfig } from '../features/rate-limiting';
 import type { EmailProviderConfig } from '../email/types';
 
 export interface ProviderConfig {
@@ -34,6 +35,7 @@ export interface SecurityConfig {
 	passwordReset?: PasswordResetOptions;
 	twoFactorAuth?: TwoFactorAuthOptions;
 	emailProvider?: EmailProviderConfig;
+	rateLimiting: RateLimitingConfig;
 
 	// Route protection configuration
 	routeProtection?: {
@@ -60,6 +62,7 @@ export interface SecurityConfig {
 		//Custom session object path for user roles (default: 'role')
 		roleKey?: string;
 	};
+	
 	passwordPolicy?: {
 		minLength?: number;
 		maxLength?: number;
@@ -71,6 +74,7 @@ export interface SecurityConfig {
 		specialChars?: string;
 	};
 }
+
 
 export interface EventHandlers {
 	onSignIn?: (user: User) => Promise<void>;
