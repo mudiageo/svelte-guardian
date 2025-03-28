@@ -1,15 +1,55 @@
 import type { Handle } from '@sveltejs/kit';
 import type { SecurityConfig } from '../types/config';
 import type { Adapter } from '@auth/core/adapters';
+import { RateLimiterFactory, type RateLimitingConfig } from '../features/rate-limiting';
 
 import { sequence } from '@sveltejs/kit/hooks';
 import { json, redirect } from '@sveltejs/kit';
 
 import { getEndpoints } from '../features/endpoints';
 
-export function createMiddleware(securityConfig: SecurityConfig, adapter: Adapter): Handle {
+export function createMiddleware(securityConfig: SecurityConfig, adapter: Adapter, logger): Handle {
 	const endpoints = getEndpoints(securityConfig, adapter, securityConfig.emailProvider) || {};
-	const authMiddleware: Handle = async ({ event, resolve }) => {
+	 
+
+  const rateLimitingMiddleware: Handle = async ({ event, resolve }) => {
+
+// TODO  Determine rate limit configuration based on route or request type
+  
+    const rateLimitingConfig: RateLimitingConfig = securityConfig.rateLimiting
+    
+    const rateLimiter = RateLimiterFactory.create(rateLimitingConfig)
+
+    // Apply rate limiting
+    const rateLimitResult = rateLimiter.limit(event, rateLimitingConfig);
+
+    if (!rateLimitResult.allowed) {
+        // Optionally log the blocked request
+        logger.warn(`Rate limit exceeded for ${event.route?.id || 'unknown route'}`, {
+            ip: event.getClientAddress(),
+            user: event.locals.auth?.()?.user?.id,
+            blockedUntil: rateLimitResult.blockedUntil
+        });
+
+        // Throw a redirect or return an error response
+        redirect(429, '/rate-limited');
+    }
+    
+    // Attach rate limit headers for transparency
+    const headers: Record<string, string> = {
+			'X-RateLimit-Limit': String(config.maxRequests || 10),
+			'X-RateLimit-Remaining': String(rateLimitResult.remaining),
+			'X-RateLimit-Reset': String(rateLimitResult.resetTime)
+		};
+    Object.entries(headers).forEach(([key, value]) => {
+			event.setHeaders({ [key]: value });
+		});
+
+    return resolve(event);
+    
+};
+
+  const authMiddleware: Handle = async ({ event, resolve }) => {
 		const session = await event.locals.auth();
 		const routeProtection = securityConfig?.routeProtection;
 		const userRole = session?.user?.[routeProtection?.roleKey || 'role'];
@@ -66,6 +106,7 @@ export function createMiddleware(securityConfig: SecurityConfig, adapter: Adapte
 		if (endpoint) return json(await endpoint(event));
 		return resolve(event);
 	};
+
 	const securityHeadersMiddleware: Handle = async ({ event, resolve }) => {
 		// Apply security headers based on config level
 		const headers: Record<string, string> = {
@@ -84,5 +125,5 @@ export function createMiddleware(securityConfig: SecurityConfig, adapter: Adapte
 		return resolve(event);
 	};
 
-	return sequence(authMiddleware, endpointsMiddleware, securityHeadersMiddleware);
+	return sequence(rateLimitingMiddleware, authMiddleware, endpointsMiddleware, securityHeadersMiddleware);
 }

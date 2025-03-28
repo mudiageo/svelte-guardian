@@ -42,14 +42,19 @@ describe('createMiddleware', () => {
 	};
 
 	let event: RequestEvent;
+	let request: RequestEvent["request"];
 	let	resolve: (event: RequestEvent) => string // For the purpose of this test
 
 	beforeEach(() => {
+	  request = new Request('http://localhost/')
 		event = {
-			url: new URL('http://localhost/'),
+		  request,
+			url: new URL(request.url),
 			locals: {
 				auth: vi.fn().mockResolvedValue(null) // No session by default
-			},
+     //   auth: () => ({user: { id: 'user123' }  })
+      },
+      getClientAddress: () => '127.0.0.1',
 			setHeaders: vi.fn() // Mock setHeaders
 		};
 		resolve = vi.fn().mockResolvedValue('response');
@@ -59,7 +64,7 @@ describe('createMiddleware', () => {
 			event.url = new URL('http://localhost/login');
 
 			const middleware = createMiddleware(securityConfig);
-			const response = await middleware[0]({ event, resolve });
+			const response = await middleware[1]({ event, resolve });
 
 			expect(resolve).toHaveBeenCalledWith(event);
 			expect(response).toBe('response');
@@ -70,7 +75,7 @@ describe('createMiddleware', () => {
 			event.locals.auth = vi.fn().mockResolvedValue({ user: { role: 'user' } }); // Authenticated user
 
 			const middleware = createMiddleware(securityConfig);
-			await middleware[0]({ event, resolve });
+			await middleware[1]({ event, resolve });
 
 			expect(redirect).toHaveBeenCalledWith(303, '/dashboard');
 		});
@@ -79,7 +84,7 @@ describe('createMiddleware', () => {
 			event.url = new URL('http://localhost/admin');
 
 			const middleware = createMiddleware(securityConfig);
-			await middleware[0]({ event, resolve });
+			await middleware[1]({ event, resolve });
 
 			expect(redirect).toHaveBeenCalledWith(303, '/login');
 		});
@@ -89,7 +94,7 @@ describe('createMiddleware', () => {
 			event.locals.auth = vi.fn().mockResolvedValue({ user: { role: 'user' } }); // User with invalid role
 
 			const middleware = createMiddleware(securityConfig);
-			await middleware[0]({ event, resolve });
+			await middleware[1]({ event, resolve });
 
 			expect(redirect).toHaveBeenCalledWith(303, '/login');
 		});
@@ -99,7 +104,7 @@ describe('createMiddleware', () => {
 			event.locals.auth = vi.fn().mockResolvedValue({ user: { role: 'admin' } }); // User with valid role
 
 			const middleware = createMiddleware(securityConfig);
-			const response = await middleware[0]({ event, resolve });
+			const response = await middleware[1]({ event, resolve });
 
 			expect(resolve).toHaveBeenCalledWith(event);
 			expect(response).toBe('response');
@@ -117,8 +122,9 @@ describe('createMiddleware', () => {
 		it('should handle matching endpoint', async () => {
 			const formData = new FormData();
 			formData.append('email', 'test@example.com');
+			
 			const mockEvent = {
-				request: new Request('http://localhost/auth/verify-email/send-otp', {
+				request: new Request('httpp://localhost/auth/verify-email/send-otp', {
 					method: 'POST',
 					headers: { 'content-type': 'multipart/form-data' },
 					body: formData
@@ -126,7 +132,7 @@ describe('createMiddleware', () => {
 			};
 
 			const middleware = createMiddleware(securityConfig, mockAdapter);
-			const result = await middleware[1]({ event: mockEvent, resolve: mockResolve });
+			const result = await middleware[2]({ event: mockEvent, resolve: mockResolve });
 
 			expect(result).toStrictEqual({ success: true, data: 'otp-sent' });
 			expect(mockResolve).not.toHaveBeenCalled();
@@ -138,7 +144,7 @@ describe('createMiddleware', () => {
 			};
 
 			const middleware = createMiddleware(securityConfig, mockAdapter);
-			const result = await middleware[1]({ event: mockEvent, resolve: mockResolve });
+			const result = await middleware[2]({ event: mockEvent, resolve: mockResolve });
 
 			expect(mockResolve).toHaveBeenCalledWith(mockEvent);
 			expect(result).toBeUndefined();
@@ -148,7 +154,7 @@ describe('createMiddleware', () => {
 	describe('securityHeadersMiddleware', () => {
 		it('should set security headers based on the config level', async () => {
 			const middleware = createMiddleware(securityConfig);
-			await middleware[2]({ event, resolve });
+			await middleware[3]({ event, resolve });
 			const headers: Record<string, string> = {
 				'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
 				'X-Frame-Options': 'DENY',
@@ -165,8 +171,9 @@ describe('createMiddleware', () => {
 			});
 		});
 	});
+	
 	it('should return the sequence of middlewares', () => {
 		const middleware = createMiddleware(securityConfig);
-		expect(middleware.length).toBe(3); // authMiddleware, endpointsMiddleware and securityHeadersMiddleware
+		expect(middleware.length).toBe(4); // authMiddleware, endpointsMiddleware and securityHeadersMiddleware
 	});
 });
