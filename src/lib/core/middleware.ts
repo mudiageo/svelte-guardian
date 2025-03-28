@@ -31,8 +31,18 @@ export function createMiddleware(securityConfig: SecurityConfig, adapter: Adapte
             blockedUntil: rateLimitResult.blockedUntil
         });
 
-        // Throw a redirect or return an error response
-        redirect(429, '/rate-limited');
+        // Return a proper rate limit exceeded response
+        return new Response(JSON.stringify({
+          error: 'Too Many Requests',
+          message: 'Rate limit exceeded',
+          retryAfter: rateLimitResult.blockedUntil
+        }), {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'Retry-After': String(Math.ceil((rateLimitResult.blockedUntil - Date.now()) / 1000))
+          }
+        });
     }
     
     // Attach rate limit headers for transparency
