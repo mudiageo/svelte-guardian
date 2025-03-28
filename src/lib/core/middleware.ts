@@ -37,7 +37,7 @@ export function createMiddleware(securityConfig: SecurityConfig, adapter: Adapte
     
     // Attach rate limit headers for transparency
     const headers: Record<string, string> = {
-			'X-RateLimit-Limit': String(config.maxRequests || 10),
+			'X-RateLimit-Limit': String(rateLimitingConfig.maxRequests || 10),
 			'X-RateLimit-Remaining': String(rateLimitResult.remaining),
 			'X-RateLimit-Reset': String(rateLimitResult.resetTime)
 		};

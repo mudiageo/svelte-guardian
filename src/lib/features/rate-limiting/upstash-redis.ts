@@ -1,5 +1,6 @@
 import { Redis } from '@upstash/redis';
 import type { RequestEvent } from '@sveltejs/kit';
+import type { RateLimitingConfig } from './';
 
 export class UpstashRedisRateLimiter {
 	private redis: Redis;
@@ -13,7 +14,7 @@ export class UpstashRedisRateLimiter {
 
 	async limit(
 		event: RequestEvent,
-		config: RateLimitConfig
+		config: RateLimitingConfig
 	): Promise<{
 		allowed: boolean;
 		remaining: number;

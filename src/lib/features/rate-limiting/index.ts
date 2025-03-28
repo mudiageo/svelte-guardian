@@ -74,10 +74,10 @@ export class RateLimiterFactory {
 				this.instance = new RedisRateLimiter(config.redisConfig.url, config.redisConfig.token);
 				break;
 			case 'upstash-redis':
-				if (!config.upstashRedisConfig) {
-					throw new Error('Upstash Redis configuration is required for Uostash Redis strategy');
+				if (!config.redisConfig) {
+					throw new Error('Redis configuration is required for Uostash Redis strategy');
 				}
-				this.instance = new UpstashRedisRateLimiter(config.redisConfig.url, config.redisConfig.token);
+				this.instance = new UpstashRedisRateLimiter(config.redisConfig);
 				break;
 			case 'memory':
 			default:

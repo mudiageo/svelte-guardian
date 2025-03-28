@@ -1,4 +1,5 @@
 import type { RequestEvent } from '@sveltejs/kit';
+import type { RateLimitingConfig } from './';
 
 export class InMemoryRateLimiter {
 	private requestLog: Map<string, Array<{ timestamp: number; requestCount: number }>> = new Map();
@@ -6,7 +7,7 @@ export class InMemoryRateLimiter {
 
 	limit(
 		event: RequestEvent,
-		config: RateLimitConfig
+		config: RateLimitingConfig
 	): {
 		allowed: boolean;
 		remaining: number;

@@ -62,7 +62,7 @@ describe('RateLimiterFactory', () => {
       RateLimiterFactory.create({
         strategy: 'upstash-redis'
       })
-    ).toThrowError('Upstash Redis configuration is required for Uostash Redis strategy');
+    ).toThrowError('Redis configuration is required for Uostash Redis strategy');
   });
 });
 
