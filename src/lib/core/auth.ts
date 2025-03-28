@@ -40,7 +40,7 @@ export class GuardianAuth {
 
 	// Create authentication middleware
 	private createMiddleware(): Handle {
-		return createMiddleware(this.config.security, this.adapter);
+		return createMiddleware(this.config.security, this.adapter, this.logger);
 	}
 
 	// Initialize authentication
