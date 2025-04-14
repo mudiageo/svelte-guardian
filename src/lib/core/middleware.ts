@@ -18,6 +18,8 @@ export function createMiddleware(securityConfig: SecurityConfig, adapter: Adapte
   
     const rateLimitingConfig: RateLimitingConfig = securityConfig.rateLimiting
     
+    if(!rateLimitingConfig) return resolve(event)
+    
     const rateLimiter = RateLimiterFactory.create(rateLimitingConfig)
 
     // Apply rate limiting
