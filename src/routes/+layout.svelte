@@ -95,7 +95,7 @@
 				<div class="flex items-center gap-4">
 					<ThemeToggle />
 					<a
-						href={`${GITHUB_REPO}/edit/main/content${page.url.pathname}.md`}
+						href={`${GITHUB_REPO}/edit/docs/src${page.url.pathname}.md`}
 						class="text-sm text-muted-foreground hover:text-foreground"
 						target="_blank"
 						rel="noopener noreferrer"
