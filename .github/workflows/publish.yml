@@ -7,6 +7,8 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+     id-token: write
     steps:
       - uses: actions/checkout@v4
       - name: Install pnpm
@@ -37,6 +39,6 @@ jobs:
          echo "Setting package version to $TAG_VERSION"
         
       - name: Publish to NPM
-        run: pnpm publish --no-git-checks
+        run: pnpm publish --no-git-checks --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
