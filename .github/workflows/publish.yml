@@ -7,6 +7,8 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+     id-token: write
     steps:
       - uses: actions/checkout@v4
       - name: Install pnpm
@@ -28,7 +30,15 @@ jobs:
       - name: Build package
         run: pnpm package
         
+# Additional step to extract version from the release tag
+      - name: Extract version from tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+         TAG_VERSION=${GITHUB_REF#refs/tags/v}
+         pnpm version $TAG_VERSION --no-git-tag-version
+         echo "Setting package version to $TAG_VERSION"
+        
       - name: Publish to NPM
-        run: pnpm publish --no-git-checks
+        run: pnpm publish --no-git-checks --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
