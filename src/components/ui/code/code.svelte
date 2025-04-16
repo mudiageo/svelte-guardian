@@ -59,7 +59,7 @@
                 code,
                 copyButtonContainerClass = undefined,
                 class: className = undefined,
-                hideLines = false,
+                hideLines = true,
                 hideCopy = false,
                 highlight = []
         }: Props = $props();
