@@ -1,5 +1,6 @@
 import { guardianAuth, type GuardianAuthConfig } from '$lib';
 import { env } from '$env/dynamic/private';
+import { building } from '$app/environment'
 import { PrismaClient } from '@prisma/client';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 const prisma = new PrismaClient();
@@ -42,8 +43,8 @@ export const { handle, signIn, signOut, middleware, createUser } = await guardia
 			from: 'Your Company <your-email@gmail.com>',
 			auth: {
 				method: 'app-password',
-				user: env.GMAIL_USER,
-				appPass: env.GMAIL_APP_PASSWORD
+				user: building ? '' : env.GMAIL_USER,
+				appPass: building ? '' : env.GMAIL_APP_PASSWORD 
 			}
 		},
 		routeProtection: {

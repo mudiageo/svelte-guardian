@@ -1,3 +1,4 @@
+export const prerender = 'auto'
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 

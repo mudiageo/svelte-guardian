@@ -1,5 +1,3 @@
-export const prerender = true
-
 import { error } from '@sveltejs/kit';
 import type { LayoutLoad } from './$types';
 import { readdir, readFile } from 'fs/promises';
