@@ -1,5 +1,9 @@
 <script lang="ts">
-	import { ArrowRight, Shield, Lock, Zap } from '@lucide/svelte';
+	import ArrowRight from '@lucide/svelte/icons/arrow-right';
+	import Shield from '@lucide/svelte/icons/shield';
+	import Lock from '@lucide/svelte/icons/lock';
+	import Zap from '@lucide/svelte/icons/zap';
+	
 	import * as Card from '$components/ui/card';
 </script>
 

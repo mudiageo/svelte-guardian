@@ -7,9 +7,7 @@ export const load = (async ({ params }) => {
 	const modulePath = `/src/docs/${params.slug}.md`;
 
 	const potentialModule = modules[modulePath];
-console.log("fgh")
-console.log(await potentialModule())
-console.log("ffhgh")
+
 		//  const post = await import(`$docs/${params.slug}.md`);
 		
 	if (potentialModule) {
