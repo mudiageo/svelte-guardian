@@ -12,7 +12,7 @@
 
 	/** @type {Props} */
 	let { children, headings = [] } = $props();
-	
+	console.log(page)
 </script>
 
 <div class="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-12">

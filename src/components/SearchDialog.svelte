@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Dialog from '$components/ui/dialog';
 	import * as Command from '$components/ui/command';
-	import { Search } from '@lucide/svelte';
+	import Search from '@lucide/svelte/icons/search';
 	import { goto } from '$app/navigation';
 	import Fuse from 'fuse.js';
 	import { onMount } from 'svelte';

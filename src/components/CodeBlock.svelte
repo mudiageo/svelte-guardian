@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Check, Copy } from '@lucide/svelte';
+	import Check from '@lucide/svelte/icons/check';
+	import Copy from '@lucide/svelte/icons/copy';
 	import { fly } from 'svelte/transition';
 	
 	export let code: string;

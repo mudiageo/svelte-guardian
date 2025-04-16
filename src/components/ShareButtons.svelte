@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { Twitter, Linkedin, Facebook } from '@lucide/svelte';
+	import Twitter from '@lucide/svelte/icons/twitter';
+	import Linkedin from '@lucide/svelte/icons/linkedin';
+	import Facebook from '@lucide/svelte/icons/facebook';
 	
 	export let url: string;
 	export let title: string;
