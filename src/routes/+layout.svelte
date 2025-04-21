@@ -1,6 +1,5 @@
 <script lang="ts">
 	import '../app.css';
-	import { onMount } from 'svelte'
 	import { page } from '$app/state';
 	import SearchDialog from '$components/SearchDialog.svelte';
 	import VersionSelector from '$components/VersionSelector.svelte';

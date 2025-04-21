@@ -1,19 +1,21 @@
-export const prerender = 'auto'
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
 const modules = import.meta.glob('/src/docs/**/*.md'); 
 
 export const load = (async ({ params }) => {
-	const modulePath = `/src/docs/${params.slug}.md`;
+  const modulePath = `/src/docs/${params.slug}.md`;
 
-	const potentialModule = modules[modulePath];
+  const potentialModule = Object.entries(modules).find(([path, module]) => {
 
-		//  const post = await import(`$docs/${params.slug}.md`);
+  ///(path === modulePath || path === `/src/docs/${params.slug}/index.md` || path === `/src/docs/${params.slug}index.md`)
+  
+    return path === modulePath || path.match(new RegExp(`^/src/docs/${params.slug}/?index\.md$`))
+
+  })?.[1]
 		
 	if (potentialModule) {
 		try {
-		
 			const post = typeof potentialModule === 'function'
 				? await potentialModule() // Lazy loading: call the function
 				: potentialModule;       // Eager loading: use the module directly
@@ -35,5 +37,5 @@ export const load = (async ({ params }) => {
 	}
 }) satisfies PageLoad;
 
-		
+;
 		

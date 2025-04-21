@@ -27,27 +27,17 @@ export const load: LayoutLoad = async ({ url }) => {
 		const searchablePages: Page[] = [];
 		const allPages: Page[] = [];
 		
-		
-
-		
 		for (const section of sections) {
 			if (section.isDirectory()) {
 				const files = await readdir(join(docsPath, section.name));
-			
-							
-					files
-						.map(async (file) => {
-							
-						})
-				
 				const pages = await Promise.all(
 					files
 						.filter((file) => file.endsWith('.md') || file.endsWith('.svx'))
 						.map(async (file) => {
 						  const filePath = join(docsPath, section.name, file);
 							const content = await readFile(filePath, 'utf-8');
-							const path = `/docs/${section.name}/${file.replace(/\.(md|svx)$/, '')}`;
-							
+							const pathname = `/docs/${section.name}/${file.replace(/\.(md|svx)$/, '')}`;
+							const path = pathname.endsWith('/index') ? pathname.slice(0, -6) : pathname
 							// Extract title from frontmatter or first heading
 							const titleMatch = content.match(/^---\s*\ntitle:\s*(.+?)\n|^#\s+(.+)$/m);
 							const title = titleMatch ? (titleMatch[1] || titleMatch[2]).trim() : file.replace(/\.(md|svx)$/, '').replace(/-/g, ' ');
