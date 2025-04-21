@@ -9,7 +9,7 @@ import rehypeSlug from 'rehype-slug';
  */
 const injectScriptToMarkdown = () => {
   const scriptToAdd = `<!-- ... -->
-<script>
+<script module>
   import { Code } from '$components/ui/code'
 </script>
 
@@ -47,6 +47,17 @@ const injectScriptToMarkdown = () => {
     }
   };
 };
+/**
+  * Returns code with curly braces and backticks replaced by HTML entity equivalents
+  * @param {string} html - highlighted HTML
+  * @returns {string} - escaped HTML
+  */
+ function escapeHtml(code) {
+   return code.replace(
+     /[{}`]/g,
+     (character) => ({ '{': '&lbrace;', '}': '&rbrace;', '`': '&grave;' }[character]),
+   );
+ }
 
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -58,10 +69,14 @@ const config = {
 			$hooks: './src/hooks',
 			$src: './src',
 			$docs: './src/docs',
-		}
+		},
+		prerender: {
+		  crawl: false
+		},
 	},
 	extensions: ['.svelte', '.md', '.svx'],
 	preprocess: [
+	  vitePreprocess(),
 	  injectScriptToMarkdown(),
 		mdsvex({
 			extensions: ['.md', '.svx'],
@@ -72,10 +87,10 @@ const config = {
 			rehypePlugins: [rehypeSlug],
 			highlight: {
 				highlighter: (code, lang) => {
-					return `<Code code={\`${code}\`} language="${lang}" />`;
+					return `<Code code={\`${escapeHtml(code)}\`} language="${lang}" />`;
 				}
 			}
-		})
+		}),
 	]
 };
 

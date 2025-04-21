@@ -159,9 +159,8 @@ rateLimiting: {
   keyGenerator: (event: RequestEvent) => {
     // Custom key generation logic
     const user = event.locals.auth?.()?.user;
-    if(user?.id) return \`custom:user:${user.id}\`;
-
-    return \`custom:ip:${event.getClientAddress()}\`;
+    if(user?.id) return `custom:user:${user.id}`;
+    return `custom:ip:${event.getClientAddress()}`;
   }
 }
 ```

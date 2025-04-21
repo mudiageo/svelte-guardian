@@ -1,5 +1,5 @@
 <script lang="ts">
-        import { cn } from '$src/utils';
+        import { cn, unescapeHtml } from '$src/utils';
         import { tv, type VariantProps } from 'tailwind-variants';
         import { highlighter, type SupportedLanguage } from './shiki';
         import DOMPurify from 'isomorphic-dompurify';
@@ -68,7 +68,7 @@
 
         const highlighted = $derived(
                 DOMPurify.sanitize(
-                        hl?.codeToHtml(code, {
+                        hl?.codeToHtml(unescapeHtml(code), {
                                 lang: lang,
                                 themes: {
                                         light: 'github-light-default',
