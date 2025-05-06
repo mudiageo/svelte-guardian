@@ -1,6 +1,6 @@
 import type { Adapter } from '@auth/core/adapters';
 import { optionalImport } from './utils';
-import { PrismaClient } from '@prisma/client'
+import type { PrismaClient } from '@prisma/client'
 
 // Comprehensive database provider types
 export type DatabaseProviderType =
