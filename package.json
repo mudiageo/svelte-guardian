@@ -34,6 +34,8 @@
 	"homepage": "https://github.com/mudiageo/svelte-guardian#readme",
 	"files": [
 		"dist",
+		"!dist/auth.js",
+		"!dist/auth.d.ts",
 		"!dist/**/*.test.*",
 		"!dist/**/*.spec.*"
 	],
