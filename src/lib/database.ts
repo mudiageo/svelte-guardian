@@ -1,6 +1,5 @@
 import type { Adapter } from '@auth/core/adapters';
 import { optionalImport } from './utils';
-import type { PrismaClient } from '@prisma/client'
 
 // Comprehensive database provider types
 export type DatabaseProviderType =
@@ -27,7 +26,7 @@ export interface CustomAdapterConfig extends BaseDatabaseConfig {
 }
 export interface PrismaConfig extends BaseDatabaseConfig {
 	type: 'prisma';
-	client: PrismaClient;
+	client: any;
 }
 
 export interface DrizzleConfig extends BaseDatabaseConfig {
