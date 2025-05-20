@@ -24,7 +24,7 @@
 </script>
 
 <div class="relative group">
-	<pre class="!pr-12"><code class={language}>{code}</code></pre>
+	<pre class="pr-12!"><code class={language}>{code}</code></pre>
 	<button
 		class="absolute right-2 top-2 p-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-muted hover:bg-muted/80"
 		onclick={copyCode}

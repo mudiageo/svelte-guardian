@@ -137,7 +137,7 @@
 
 	<!-- Main content -->
 	<div class="flex-1 flex flex-col min-h-screen">
-		<header class="sticky top-0 z-30 border-b bg-background/95 backdrop-blur">
+		<header class="sticky top-0 z-30 border-b bg-background/95 backdrop-blur-sm">
 			<div class="container flex h-14 items-center justify-between">
 				<div class="flex items-center gap-4">
 					<SearchDialog pages={page.data.searchablePages || []} />
