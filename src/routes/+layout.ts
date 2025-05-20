@@ -44,35 +44,21 @@ export const load: LayoutLoad = async ({ url }) => {
 
 			try {
                 const module = await (importer as () => Promise<{ default: string; metadata?: { title?: string; order?: number } }>);
+                
+        const pageMd = typeof module === 'function'	? await module()	: module;
 
-                const content = module.default;
-                const metadata = module.metadata;
+                const content = pageMd.default;
+                
+                const metadata = pageMd.metadata;
 
-				let title: string;
+				let title: string = metadata?.title;
 				let order: number | undefined = metadata?.order;
 
-				if (metadata?.title) {
-					title = metadata.title;
-				} else {
-					const titleMatch = content.match(/^---\s*\ntitle:\s*(.+?)\n|^#\s+(.+)$/m);
-					if (titleMatch) {
-						title = (titleMatch[1] || titleMatch[2]).trim();
-					} else {
-						title = filename.replace(/\.(md|svx)$/, '').replace(/-/g, ' ');
-					}
-				}
-
-                if (order === undefined) {
-                    const orderMatch = content.match(/^---\s*\n(?:.*\n)*order:\s*(\d+)/m);
-                    if (orderMatch) {
-                        order = parseInt(orderMatch[1]);
-                    }
-                }
 
 				const page: Page = {
 					title,
 					path: normalizedFinalPath,
-					content: content,
+					content,
 					order,
 				};
 
@@ -94,7 +80,7 @@ export const load: LayoutLoad = async ({ url }) => {
 		const sortedSectionKeys = Array.from(pagesBySection.keys()).sort((a, b) => {
 			if (a === '_root') return 1;
 			if (b === '_root') return -1;
-			return a.localeCompare(b);
+			return a?.localeCompare(b) || 1;
 		});
 
 		for (const sectionKey of sortedSectionKeys) {
@@ -106,7 +92,7 @@ export const load: LayoutLoad = async ({ url }) => {
 				}
 				if (a.order !== undefined && b.order === undefined) return -1;
 				if (a.order === undefined && b.order !== undefined) return 1;
-				return a.title.localeCompare(b.title);
+				return a.title?.localeCompare(b.title);
 			});
 
 			const formattedSection = sectionKey === '_root'
@@ -119,7 +105,7 @@ export const load: LayoutLoad = async ({ url }) => {
 			navigation[formattedSection] = pages.map(page => ({ title: page.title, path: page.path }));
 		}
 
-		allPages.sort((a, b) => a.path.localeCompare(b.path));
+		allPages.sort((a, b) => a.path?.localeCompare(b.path));
 
 		const searchablePages: Page[] = allPages;
 

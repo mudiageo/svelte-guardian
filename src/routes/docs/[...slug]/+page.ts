@@ -15,7 +15,6 @@ export const load = (async ({ params }) => {
 			const post = typeof potentialModule === 'function'
 				? await potentialModule() // Lazy loading: call the function
 				: potentialModule;       // Eager loading: use the module directly
-
 	
 			return {
 				content: post.default,
@@ -24,12 +23,12 @@ export const load = (async ({ params }) => {
 			};
 		} catch (e) {
 			console.error(`Error loading module ${modulePath}:`, e);
-			throw error(500, `Failed to load documentation for ${params.slug}`);
+			error(500, `Failed to load documentation for ${params.slug}`);
 		}
 	} else {
 		// If the path doesn't exist in our glob results, it's a 404
 		console.warn(`Module not found via glob: ${modulePath}`);
-		throw error(404, `Could not find documentation for ${params.slug}`);
+		error(404, `Could not find documentation for ${params.slug}`);
 	}
 }) satisfies PageLoad;
 
