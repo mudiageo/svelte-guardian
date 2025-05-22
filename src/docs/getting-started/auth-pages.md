@@ -1,7 +1,6 @@
 ---
 title: "Authentication Pages"
 description: "Creating authentication pages for your Svelte Guardian integration."
-date: "2025-05-22"
 ---
 
 # Creating Authentication Pages

@@ -1,7 +1,6 @@
 ---
 title: "Introduction to Svelte Guardian"
 description: "An overview of Svelte Guardian for SvelteKit applications."
-date: "2025-05-22"
 ---
 
 # Introduction to Svelte Guardian

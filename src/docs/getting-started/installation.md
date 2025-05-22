@@ -1,7 +1,6 @@
 ---
 title: "Installation"
 description: "How to install and set up Svelte Guardian in your SvelteKit project."
-date: "2025-05-22"
 ---
 
 # Installing Svelte Guardian

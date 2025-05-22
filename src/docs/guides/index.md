@@ -1,7 +1,6 @@
 ---
 title: "Guides"
 description: "Step-by-step instructions for authentication and authorization features in Svelte Guardian."
-date: "2025-05-22"
 ---
 
 # Guides

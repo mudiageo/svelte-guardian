@@ -1,7 +1,6 @@
 ---
 title: "Route Protection"
 description: "Implementing authentication-based route protection in SvelteKit with Svelte Guardian."
-date: "2025-05-22"
 ---
 
 # Route Protection

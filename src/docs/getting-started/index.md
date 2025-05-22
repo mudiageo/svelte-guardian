@@ -1,7 +1,6 @@
 ---
 title: "Getting Started with Svelte Guardian"
 description: "Guide to set up Svelte Guardian in your SvelteKit project."
-date: "2025-05-22"
 ---
 
 # Getting Started with Svelte Guardian

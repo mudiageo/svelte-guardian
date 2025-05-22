@@ -1,7 +1,6 @@
 ---
 title: "Configuration"
 description: "Configuration options for Svelte Guardian in your SvelteKit project."
-date: "2025-05-22"
 ---
 
 # Configuring Svelte Guardian

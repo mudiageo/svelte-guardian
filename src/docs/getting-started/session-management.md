@@ -1,7 +1,6 @@
 ---
 title: "Session Management"
 description: "Working with authentication sessions in Svelte Guardian."
-date: "2025-05-22"
 ---
 
 # Session Management

@@ -1,7 +1,6 @@
 ---
 title: "User Data and Profiles"
 description: "Managing user data and profiles with Svelte Guardian."
-date: "2025-05-22"
 ---
 
 # User Data and Profiles
