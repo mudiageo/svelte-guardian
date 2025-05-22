@@ -57,13 +57,13 @@
 		"svelte": "^5.0.0"
 	},
 	"devDependencies": {
+		"@auth/prisma-adapter": "^2.7.4",
 		"@lucide/svelte": "^0.511.0",
 		"@playwright/test": "^1.45.3",
+		"@prisma/client": "^5.22.0",
 		"@shikijs/langs": "^3.2.2",
 		"@shikijs/themes": "^3.2.2",
-		"@auth/prisma-adapter": "^2.7.4",
-		"@prisma/client": "^5.22.0",
-		"@sveltejs/adapter-auto": "^3.0.0",
+		"@sveltejs/adapter-auto": "^6.0.1",
 		"@sveltejs/kit": "^2.21.1",
 		"@sveltejs/package": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.3",
