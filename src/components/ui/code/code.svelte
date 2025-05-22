@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn } from '$lib/utils/utils';
+	import { cn } from '$src/utils';
 	import { tv, type VariantProps } from 'tailwind-variants';
 	import { highlighter, type SupportedLanguage } from './shiki';
 	import DOMPurify from 'isomorphic-dompurify';

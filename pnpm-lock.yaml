@@ -99,12 +99,6 @@ importers:
       fuse.js:
         specifier: ^7.1.0
         version: 7.1.0
-      github-dark-default:
-        specifier: link:@shikijs/themes/github-dark-default
-        version: link:@shikijs/themes/github-dark-default
-      github-light-default:
-        specifier: link:@shikijs/themes/github-light-default
-        version: link:@shikijs/themes/github-light-default
       globals:
         specifier: ^15.0.0
         version: 15.12.0
