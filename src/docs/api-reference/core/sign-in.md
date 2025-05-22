@@ -51,7 +51,7 @@ Returns a [SignInResult](/api-reference/types.md#signinresult) object with:
 ```typescript
 // src/routes/api/signin/+server.ts
 import { json } from '@sveltejs/kit';
-import { signIn } from '$lib/auth';
+import { signIn } from '$lib/server/auth';
 
 export async function POST({ request, cookies }) {
   const body = await request.json();

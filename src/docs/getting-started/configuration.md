@@ -9,20 +9,20 @@ This guide covers the basic and advanced configuration options for Svelte Guardi
 
 ## Basic Configuration
 
-To set up Svelte Guardian, you need to initialize it in your SvelteKit hooks file. Create or modify your `src/hooks.server.js` (or `.ts` for TypeScript projects):
+To set up Svelte Guardian, you need to initialize it in a server module. The recommended approach is to create a file at `src/lib/server/auth.ts`:
 
 ```typescript
+//src/lib/server/auth.ts
 import { guardianAuth } from 'svelte-guardian';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { PrismaClient } from '@prisma/client';
-import { sequence } from '@sveltejs/kit/hooks';
 
 // Initialize Prisma client
 const prisma = new PrismaClient();
 const adapter = PrismaAdapter(prisma);
 
 // Configure Svelte Guardian
-const { handle: authHandle, signIn, signOut, middleware } = await guardianAuth({
+export const { handle, signIn, signOut, middleware, createUser } = await guardianAuth({
   database: {
     type: 'custom',
     adapter
@@ -41,9 +41,11 @@ const { handle: authHandle, signIn, signOut, middleware } = await guardianAuth({
   }
 });
 
-// Combine SvelteKit hooks
+//src/hooks.server.js
+import { sequence } from '@sveltejs/kit/hooks';
+import { handle as authHandle, middleware } from '$lib/auth';
+
 export const handle = sequence(authHandle, middleware);
-export { signIn, signOut };
 ```
 
 ## Configuration Options

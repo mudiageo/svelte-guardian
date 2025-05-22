@@ -27,6 +27,9 @@ Welcome to the Svelte Guardian guides section. Here you'll find step-by-step ins
 - [Advanced Route Protection](./advanced-route-protection.md)
   Fine-tune your route protection strategies.
 
+- [Admin Dashboard Setup](./admin-dashboard.md)
+  Create a secure admin dashboard with role-based access control.
+
 ## Need More Help?
 
 If you don't find what you're looking for, check out the [API Reference](/api-reference/index.md) for detailed documentation on all available options and methods.

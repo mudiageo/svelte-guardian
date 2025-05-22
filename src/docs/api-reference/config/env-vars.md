@@ -47,7 +47,7 @@ These environment variables are used for configuring email services:
 | `EMAIL_FROM` | From address for emails | Email features | `Your App <no-reply@example.com>` |
 
 ## Security Settings
-
+//TODO
 These environment variables affect security settings:
 
 | Variable | Description | Default | Example |
@@ -61,7 +61,7 @@ These environment variables affect security settings:
 | `AUTH_RATE_LIMIT_MAX` | Maximum requests per minute | `60` | `100` |
 
 ## Advanced Configuration
-
+//TODO
 These environment variables are used for advanced configuration:
 
 | Variable | Description | Default | Example |
@@ -76,7 +76,7 @@ These environment variables are used for advanced configuration:
 ## Development and Testing
 
 These environment variables are useful during development and testing:
-
+//TODO
 | Variable | Description | Default | Example |
 |----------|-------------|---------|---------|
 | `AUTH_DEV_EMAIL_CONSOLE` | Log emails to console in development | `false` | `true` |

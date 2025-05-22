@@ -7,6 +7,16 @@ description: "Guide to set up Svelte Guardian in your SvelteKit project."
 
 Welcome to the getting started section of the Svelte Guardian documentation. These guides will help you set up and configure Svelte Guardian in your SvelteKit project to implement comprehensive authentication and authorization functionality.
 
+## In This Section
+
+- [Installation](#installation) - Install and configure Svelte Guardian
+- [Configuration](/getting-started/configuration.md) - Configure Svelte Guardian options
+- [Authentication Pages](/getting-started/auth-pages.md) - Create sign-in, sign-up, and other auth pages
+- [Route Protection](/getting-started/route-protection.md) - Protect routes based on authentication status
+- [Session Management](/getting-started/session-management.md) - Manage user sessions
+- [User Profiles](/getting-started/user-profiles.md) - Work with user data
+- [Directory Structure](/getting-started/directory-structure.md) - Understand project organization
+
 ## Prerequisites
 
 - A SvelteKit project (v2.0.0 or higher)
@@ -99,18 +109,18 @@ npx prisma migrate dev --name init
 
 ### 2. Configure Svelte Guardian
 
-Create or modify your `src/hooks.server.js` (or `.ts`) file:
+Create a file at `src/lib/server/auth.ts`:
 
 ```typescript
 import { guardianAuth } from 'svelte-guardian';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { PrismaClient } from '@prisma/client';
-import { sequence } from '@sveltejs/kit/hooks';
+import { env } from '$env/dynamic/private';
 
 const prisma = new PrismaClient();
 const adapter = PrismaAdapter(prisma);
 
-const { handle: authHandle, signIn, signOut, middleware } = await guardianAuth({
+export const { handle, signIn, signOut, middleware, createUser } = await guardianAuth({
   database: {
     type: 'custom',
     adapter
@@ -139,9 +149,15 @@ const { handle: authHandle, signIn, signOut, middleware } = await guardianAuth({
     }
   }
 });
+```
+
+Then create or modify your `src/hooks.server.js` (or `.ts`) file:
+
+```typescript
+import { sequence } from '@sveltejs/kit/hooks';
+import { handle as authHandle, middleware } from '$lib/auth';
 
 export const handle = sequence(authHandle, middleware);
-export { signIn, signOut };
 ```
 
 ### 3. Create Sign-in and Sign-up Pages
@@ -150,7 +166,7 @@ Create basic sign-in and sign-up pages in your project. Here's a simple example 
 
 ```svelte
 <script>
-  import { signIn } from '$lib/auth';
+  import { signIn } from '$lib/server/auth';
   
   let email = '';
   let password = '';

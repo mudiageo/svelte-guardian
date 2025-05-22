@@ -756,7 +756,7 @@ For some authentication operations, you'll need server-side handlers. Here's an 
 ```typescript
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { signIn } from '$lib/auth';
+import { signIn } from '$lib/server/auth';
 
 export const actions = {
   default: async ({ request, cookies }) => {

@@ -26,6 +26,7 @@ Svelte Guardian provides a robust, easy-to-use authentication system for your Sv
 - [API Reference](/api-reference/index.md): Detailed API documentation for developers
 - [Security](/security/index.md): Security features and best practices
 - [Features](/features/index.md): Overview of all available features
+- [Roadmap](/roadmap.md): Upcoming features and development plans
 
 ## Installation
 
@@ -43,10 +44,11 @@ yarn add svelte-guardian
 ## Quick Start
 
 ```typescript
-// src/hooks.server.ts
+// src/lib/server/auth.ts
 import { guardianAuth } from 'svelte-guardian';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { PrismaClient } from '@prisma/client';
+import { env } from '$env/dynamic/private';
 
 const prisma = new PrismaClient();
 const adapter = PrismaAdapter(prisma);

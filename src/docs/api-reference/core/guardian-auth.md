@@ -21,7 +21,7 @@ const { handle, signIn, signOut, middleware } = await guardianAuth(config: Guard
 
 Returns an object with the following properties:
 
-- `handle`: A SvelteKit handle function to be used in your hooks.server.js file
+- `handle`: A SvelteKit handle function to be used in your hooks.server.ts file
 - `signIn`: A function for programmatically signing in users
 - `signOut`: A function for programmatically signing out users
 - `middleware`: A function that can be composed with other SvelteKit middleware
@@ -29,16 +29,16 @@ Returns an object with the following properties:
 ## Example
 
 ```typescript
-// src/hooks.server.ts
+// src/lib/server/auth.ts
 import { guardianAuth } from 'svelte-guardian';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { PrismaClient } from '@prisma/client';
-import { sequence } from '@sveltejs/kit/hooks';
+import { env } from '$env/dynamic/private';
 
 const prisma = new PrismaClient();
 const adapter = PrismaAdapter(prisma);
 
-const { handle: authHandle, signIn, signOut, middleware } = await guardianAuth({
+export const { handle, signIn, signOut, middleware, createUser } = await guardianAuth({
   database: {
     type: 'custom',
     adapter
@@ -68,9 +68,11 @@ const { handle: authHandle, signIn, signOut, middleware } = await guardianAuth({
   }
 });
 
-// Combine with other SvelteKit middleware
+// In your src/hooks.server.ts file:
+import { sequence } from '@sveltejs/kit/hooks';
+import { handle as authHandle, middleware } from '$lib/auth';
+
 export const handle = sequence(authHandle, middleware);
-export { signIn, signOut };
 ```
 
 ## Configuration Options

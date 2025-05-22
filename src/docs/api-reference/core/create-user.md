@@ -38,7 +38,7 @@ Returns a [User](/api-reference/types.md#user) object representing the newly cre
 ### Basic Usage
 
 ```typescript
-import { createUser } from 'svelte-guardian/server';
+import { createUser } from '$lib/server/auth';
 
 const newUser = await createUser({
   email: 'user@example.com',

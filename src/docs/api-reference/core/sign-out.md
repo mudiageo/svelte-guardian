@@ -34,7 +34,7 @@ Returns a [SignOutResult](/api-reference/types.md#signoutresult) object with:
 ```typescript
 // src/routes/api/signout/+server.ts
 import { json, redirect } from '@sveltejs/kit';
-import { signOut } from '$lib/auth';
+import { signOut } from '$lib/server/auth';
 
 export async function POST({ cookies }) {
   try {
