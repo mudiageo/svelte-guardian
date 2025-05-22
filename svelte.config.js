@@ -9,7 +9,7 @@ import rehypeSlug from 'rehype-slug';
  */
 const injectScriptToMarkdown = () => {
   const scriptToAdd = `<!-- ... -->
-<script module>
+<script>
   import { Code } from '$components/ui/code'
 </script>
 
