@@ -1,8 +1,8 @@
 @import "tailwindcss";
-@config '../tailwind.config.ts';
  
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
+@config '../tailwind.config.ts';
  
  
 /*
@@ -83,6 +83,11 @@
  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
  --sidebar-border: hsl(240 3.7% 15.9%);
  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 2rem;
 }
  
 @theme inline {

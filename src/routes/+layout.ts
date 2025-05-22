@@ -12,15 +12,13 @@ interface Page {
 
 interface NavigationItem {
 	title: string;
-	path: string;
-	item?: NavigationItem
+	url: string;
+	items?: NavigationItem[];
 }
-
-type Navigation = Record<string, NavigationItem[]>;
 
 export const load: LayoutLoad = async ({ url }) => {
 	try {
-		const navigation: Navigation = {};
+		const navigation: NavigationItem[] = [];
 		const allPages: Page[] = [];
 		const pagesBySection: Map<string, Page[]> = new Map();
 
@@ -43,17 +41,14 @@ export const load: LayoutLoad = async ({ url }) => {
             const normalizedFinalPath = finalPath === '/docs' && pageSlug === 'index' && sectionDir === '' ? '/docs' : finalPath;
 
 			try {
-                const module = await (importer as () => Promise<{ default: string; metadata?: { title?: string; order?: number } }>);
+                const module = await (importer as () => Promise<{ default: string; metadata?: { title?: string; order?: number } }>)();
                 
-        const pageMd = typeof module === 'function'	? await module()	: module;
+                const content = module.default;
+                const metadata = module.metadata;
 
-                const content = pageMd.default;
-                
-                const metadata = pageMd.metadata;
-
-				let title: string = metadata?.title;
+				let title: string = metadata?.title || filename.replace(/\.(md|svx)$/, '').replace(/-/g, ' ');
+				
 				let order: number | undefined = metadata?.order;
-
 
 				const page: Page = {
 					title,
@@ -77,6 +72,7 @@ export const load: LayoutLoad = async ({ url }) => {
 			}
 		}
 
+		// Build navigation structure
 		const sortedSectionKeys = Array.from(pagesBySection.keys()).sort((a, b) => {
 			if (a === '_root') return 1;
 			if (b === '_root') return -1;
@@ -102,7 +98,16 @@ export const load: LayoutLoad = async ({ url }) => {
 					.map(word => word.charAt(0).toUpperCase() + word.slice(1))
 					.join(' ');
 
-			navigation[formattedSection] = pages.map(page => ({ title: page.title, path: page.path }));
+			const sectionItem: NavigationItem = {
+				title: formattedSection,
+				url: sectionKey === '_root' ? '/docs' : `/docs/${sectionKey}`,
+				items: pages.map(page => ({ 
+					title: page.title, 
+					url: page.path 
+				}))
+			};
+
+			navigation.push(sectionItem);
 		}
 
 		allPages.sort((a, b) => a.path?.localeCompare(b.path));

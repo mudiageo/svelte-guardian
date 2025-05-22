@@ -1,26 +1,29 @@
-<script lang="ts">
-	import ChevronRight from '@lucide/svelte/icons/chevron-right';
+ <script lang="ts">
+ import * as Breadcrumb from "$components/ui/breadcrumb/index.js";
+  let { path } = $props();
 	
-	export let path: string;
-	
-	$: segments = path
+const segments = $derived(path
 		.split('/')
 		.filter(Boolean)
 		.map((segment, index, array) => ({
-			name: segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' '),
+			label: segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' '),
 			href: '/' + array.slice(0, index + 1).join('/')
-		}));
+		})));
+ 
 </script>
-
-<nav aria-label="Breadcrumb" class="flex items-center space-x-1 text-sm text-muted-foreground mb-6">
-	<a href="/" class="hover:text-foreground transition-colors duration-200">Home</a>
-	{#each segments as segment}
-		<ChevronRight class="h-4 w-4" />
-		<a
-			href={segment.href}
-			class="hover:text-foreground transition-colors duration-200"
-		>
-			{segment.name}
-		</a>
-	{/each}
-</nav>
+ 
+<Breadcrumb.Root>
+ <Breadcrumb.List>
+  {#each segments as {href, label}}
+ {#if segments[0].href !== href} <Breadcrumb.Separator />{/if}
+  <Breadcrumb.Item>
+    {#if segments[segments.length-1].href === href}
+   <Breadcrumb.Page>{label}</Breadcrumb.Page>
+    {:else}
+   <Breadcrumb.Link {href}>{label}</Breadcrumb.Link>
+   {/if}
+  </Breadcrumb.Item>
+  {/each}
+ </Breadcrumb.List>
+</Breadcrumb.Root>
+ 

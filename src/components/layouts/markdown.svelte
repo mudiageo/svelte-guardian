@@ -60,7 +60,7 @@
 				
 	</div>
 	
-	<div class="hidden lg:block">
+	<div class=" lg:block">
 		<TableOfContents {headings} />
 	</div>
 </div>
