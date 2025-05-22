@@ -1,3 +1,9 @@
+---
+title: "Features Overview"
+description: "Overview of authentication and authorization features in Svelte Guardian."
+date: "2025-05-22"
+---
+
 # Features Overview
 
 Svelte Guardian provides a comprehensive set of authentication and authorization features for your SvelteKit applications. Here's an overview of the key features.

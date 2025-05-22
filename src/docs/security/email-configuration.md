@@ -1,3 +1,9 @@
+---
+title: "Email Configuration"
+description: "How to configure email providers for Svelte Guardian."
+date: "2025-05-22"
+---
+
 ```typescript
 // Example configurations
 export const exampleConfigs = {

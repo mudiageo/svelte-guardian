@@ -1,3 +1,9 @@
+---
+title: "OAuth Providers"
+description: "Guide for integrating OAuth providers with Svelte Guardian."
+date: "2025-05-22"
+---
+
 # OAuth Providers
 
 Svelte Guardian supports multiple OAuth providers to allow users to sign in with their existing accounts on other platforms. This guide will walk you through integrating various OAuth providers with your SvelteKit application.

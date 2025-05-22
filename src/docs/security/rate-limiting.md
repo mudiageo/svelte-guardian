@@ -1,3 +1,9 @@
+---
+title: "Rate Limiting"
+description: "Documentation for rate limiting in Svelte Guardian."
+date: "2025-05-22"
+---
+
 # Rate Limiting
 
 Rate limiting is a crucial security feature that protects your application from brute force attacks, denial of service attacks, and abuse. Svelte Guardian provides flexible rate limiting options to secure your authentication endpoints.

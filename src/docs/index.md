@@ -1,3 +1,9 @@
+---
+title: "Svelte Guardian Documentation"
+description: "Official documentation for Svelte Guardian, a comprehensive authentication and authorization library for SvelteKit applications."
+date: "2025-05-22"
+---
+
 # Svelte Guardian Documentation
 
 Welcome to the official documentation for Svelte Guardian, a comprehensive authentication and authorization library for SvelteKit applications.

@@ -1,3 +1,9 @@
+---
+title: "API Reference"
+description: "API documentation for Svelte Guardian."
+date: "2025-05-22"
+---
+
 # API Reference
 
 Welcome to the Svelte Guardian API reference. This section provides detailed documentation for all components, functions, and types available in the library.
@@ -46,4 +52,3 @@ Welcome to the Svelte Guardian API reference. This section provides detailed doc
 - **[Rate Limiting Middleware](./middleware/rate-limiting.md)** - Rate limiting middleware
 - **[Route Protection](./middleware/route-protection.md)** - Route protection middleware
 - **[Security Headers](./middleware/security-headers.md)** - Security headers middleware
-```

@@ -1,3 +1,9 @@
+---
+title: "Two-Factor Authentication"
+description: "Guide for enabling two-factor authentication in Svelte Guardian."
+date: "2025-05-22"
+---
+
 # Two-Factor Authentication
 
 Two-Factor Authentication (2FA) adds an extra layer of security to your authentication system by requiring users to provide two different authentication factors to verify their identity.
