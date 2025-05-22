@@ -6,7 +6,7 @@ date: "2025-05-22"
 
 # Getting Started with Svelte Guardian
 
-This guide will help you set up Svelte Guardian in your SvelteKit project and implement basic authentication functionality.
+Welcome to the getting started section of the Svelte Guardian documentation. These guides will help you set up and configure Svelte Guardian in your SvelteKit project to implement comprehensive authentication and authorization functionality.
 
 ## Prerequisites
 
@@ -228,11 +228,26 @@ security: {
 }
 ```
 
+## Getting Started Guides
+
+Our getting started documentation is organized into the following sections:
+
+1. [Introduction to Svelte Guardian](./introduction.md) - Overview of Svelte Guardian features and concepts
+2. [Installation](./installation.md) - Step-by-step installation instructions
+3. [Configuration](./configuration.md) - Detailed configuration options
+4. [Authentication Pages](./auth-pages.md) - Creating sign-in, sign-up, and other authentication pages
+5. [Route Protection](./route-protection.md) - Protecting routes based on authentication status and user roles
+6. [Session Management](./session-management.md) - Working with user sessions
+7. [User Data and Profiles](./user-profiles.md) - Managing user data and profiles
+
 ## Next Steps
 
-After completing this basic setup, you might want to explore these additional features:
+After completing the getting started guides, you might want to explore these additional features:
 
-- [Adding OAuth Providers](/guides/oauth-providers.md)
+- [Email Verification and Password Reset](../guides/email-verification-password-reset.md)
+- [OAuth Providers](../guides/oauth-providers.md)
+- [Two-Factor Authentication](../guides/two-factor-auth.md)
+- [Advanced Security Features](../security/index.md)
 - [Implementing Two-Factor Authentication](/guides/two-factor-auth.md)
 - [Customizing Email Templates](/guides/email-templates.md)
 - [Rate Limiting and Security Features](/security/rate-limiting.md)
