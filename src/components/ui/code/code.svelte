@@ -112,7 +112,7 @@
 				copyButtonContainerClass
 			)}
 		>
-			<CopyButton text={code} />
+			<CopyButton text={unescapeHtml(code)} />
 		</div>
 	{/if}
 </div>
