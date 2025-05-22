@@ -1,7 +1,6 @@
 ---
 title: "Types and Interfaces"
 description: "Reference for all TypeScript types and interfaces in Svelte Guardian."
-date: "2025-05-22"
 ---
 
 # Types and Interfaces

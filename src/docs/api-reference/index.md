@@ -1,7 +1,6 @@
 ---
 title: "API Reference"
 description: "API documentation for Svelte Guardian."
-date: "2025-05-22"
 ---
 
 # API Reference
