@@ -67,25 +67,7 @@ model User {
 
 ### 2. Including Role in Session
 
-To make the user's role available in the session, ensure it's included when creating the session:
-
-```typescript
-// src/hooks.server.ts
-const { handle } = await guardianAuth({
-  // Other config...
-  callbacks: {
-    async onSessionCreation({ session, user }) {
-      // Include the role in the session
-      session.user.role = user.role;
-      
-      // For multiple roles
-      session.user.roles = user.roles?.map(r => r.name) || [];
-      
-      return session;
-    }
-  }
-});
-```
+Roles are included in the session by defailt. Simply ensure you use yge role field, or spefify your rolefiel name in roleKey config
 
 ## Protecting Routes Based on Roles
 
@@ -131,11 +113,11 @@ export const load: PageServerLoad = async ({ locals }) => {
   const session = await locals.getSession();
   
   if (!session?.user) {
-    throw redirect(302, '/signin');
+    redirect(302, '/signin');
   }
   
   if (session.user.role !== 'admin') {
-    throw redirect(302, '/unauthorized');
+    redirect(302, '/unauthorized');
   }
   
   // Admin-specific data loading
@@ -145,43 +127,6 @@ export const load: PageServerLoad = async ({ locals }) => {
     adminData
   };
 };
-```
-
-### 3. Layout-Based Role Protection
-
-For protecting entire sections of your app:
-
-```typescript
-// src/routes/(admin)/+layout.server.ts
-import { redirect } from '@sveltejs/kit';
-import type { LayoutServerLoad } from './$types';
-
-export const load: LayoutServerLoad = async ({ locals }) => {
-  const session = await locals.getSession();
-  
-  if (!session?.user) {
-    throw redirect(302, '/signin');
-  }
-  
-  if (session.user.role !== 'admin') {
-    throw redirect(302, '/unauthorized');
-  }
-  
-  return {
-    user: session.user
-  };
-};
-```
-
-Then place your admin routes under the `(admin)` layout group:
-
-```
-src/routes/(admin)/
-  +layout.server.ts
-  +layout.svelte
-  dashboard/
-  users/
-  settings/
 ```
 
 ## Role-Based UI Elements
@@ -234,14 +179,14 @@ Create reusable components to handle role-based UI protection:
 ```svelte
 <!-- src/components/RoleGuard.svelte -->
 <script lang="ts">
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   
   export let roles: string | string[] = [];
   export let showError = false;
   
   const allowedRoles = Array.isArray(roles) ? roles : [roles];
   
-  $: user = $page.data.session?.user;
+  $: user = page.data.session?.user;
   $: hasAccess = !!user && (
     allowedRoles.length === 0 || 
     allowedRoles.includes(user.role)
@@ -258,6 +203,7 @@ Create reusable components to handle role-based UI protection:
   </slot>
 {/if}
 ```
+//TODO Add this component to library
 
 Using the guard component:
 
@@ -281,7 +227,7 @@ Using the guard component:
 
 ### 1. Custom Authorization Logic
 
-For complex permission rules, you can use custom authorization functions:
+For complex permission rules, you can use custom authorization functions(Not yet implemented):
 
 ```typescript
 const { handle } = await guardianAuth({
@@ -309,43 +255,10 @@ const { handle } = await guardianAuth({
 });
 ```
 
-### 2. API Route Protection
-
-Protect API routes based on roles:
-
-```typescript
-// src/routes/api/admin/+server.ts
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-
-export const GET: RequestHandler = async ({ locals }) => {
-  const session = await locals.getSession();
-  
-  if (!session?.user) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), { 
-      status: 401,
-      headers: { 'Content-Type': 'application/json' }
-    });
-  }
-  
-  if (session.user.role !== 'admin') {
-    return new Response(JSON.stringify({ error: 'Forbidden' }), { 
-      status: 403,
-      headers: { 'Content-Type': 'application/json' }
-    });
-  }
-  
-  // Admin-specific API logic
-  const data = await getAdminData();
-  
-  return json(data);
-};
-```
-
-### 3. Permission-Based Authorization
+### 2. Permission-Based Authorization
 
 For more granular control, implement a permission system:
-
+//TODO
 ```typescript
 // src/lib/permissions.ts
 export const PERMISSIONS = {
@@ -399,169 +312,6 @@ Use in components:
 </div>
 ```
 
-## Managing User Roles
-
-### 1. Admin Panel for Role Management
-
-Create an admin interface for managing user roles:
-
-```svelte
-<!-- src/routes/admin/users/+page.svelte -->
-<script>
-  import { enhance } from '$app/forms';
-  
-  export let data;
-  
-  const { users, roles } = data;
-</script>
-
-<h1>User Management</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Current Role</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    {#each users as user}
-      <tr>
-        <td>{user.name || 'N/A'}</td>
-        <td>{user.email}</td>
-        <td>{user.role || 'user'}</td>
-        <td>
-          <form action="?/updateRole" method="POST" use:enhance>
-            <input type="hidden" name="userId" value={user.id} />
-            <select name="role">
-              {#each roles as role}
-                <option value={role} selected={role === user.role}>
-                  {role}
-                </option>
-              {/each}
-            </select>
-            <button type="submit">Update Role</button>
-          </form>
-        </td>
-      </tr>
-    {/each}
-  </tbody>
-</table>
-```
-
-With the corresponding server action:
-
-```typescript
-// src/routes/admin/users/+page.server.ts
-import { fail } from '@sveltejs/kit';
-import type { Actions, PageServerLoad } from './$types';
-import { prisma } from '$lib/database';
-
-export const load: PageServerLoad = async ({ locals }) => {
-  const session = await locals.getSession();
-  
-  if (!session?.user || session.user.role !== 'admin') {
-    throw redirect(302, '/unauthorized');
-  }
-  
-  const users = await prisma.user.findMany({
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      role: true
-    },
-    orderBy: {
-      email: 'asc'
-    }
-  });
-  
-  const roles = ['user', 'editor', 'admin'];
-  
-  return { users, roles };
-};
-
-export const actions = {
-  updateRole: async ({ request, locals }) => {
-    const session = await locals.getSession();
-    
-    if (!session?.user || session.user.role !== 'admin') {
-      return fail(403, { error: 'Unauthorized' });
-    }
-    
-    const formData = await request.formData();
-    const userId = formData.get('userId')?.toString();
-    const role = formData.get('role')?.toString();
-    
-    if (!userId || !role) {
-      return fail(400, { error: 'Missing required fields' });
-    }
-    
-    try {
-      await prisma.user.update({
-        where: { id: userId },
-        data: { role }
-      });
-      
-      return { success: true };
-    } catch (error) {
-      console.error('Failed to update user role:', error);
-      return fail(500, { error: 'Failed to update user role' });
-    }
-  }
-} satisfies Actions;
-```
-
-### 2. Self-Service Role Requests
-
-For applications where users can request role upgrades:
-
-```svelte
-<!-- src/routes/request-role/+page.svelte -->
-<script>
-  import { enhance } from '$app/forms';
-  
-  export let data;
-  export let form;
-  
-  const { availableRoles } = data;
-</script>
-
-<h1>Request Role Upgrade</h1>
-
-{#if form?.success}
-  <div class="alert success">
-    Your role upgrade request has been submitted. You'll be notified when it's processed.
-  </div>
-{:else}
-  <form method="POST" use:enhance>
-    <div class="form-group">
-      <label for="role">Requested Role</label>
-      <select name="role" id="role" required>
-        <option value="">Select a role</option>
-        {#each availableRoles as role}
-          <option value={role.id}>{role.name}</option>
-        {/each}
-      </select>
-    </div>
-    
-    <div class="form-group">
-      <label for="reason">Reason for Request</label>
-      <textarea 
-        name="reason" 
-        id="reason" 
-        rows="4" 
-        placeholder="Please explain why you need this role upgrade"
-        required
-      ></textarea>
-    </div>
-    
-    <button type="submit">Submit Request</button>
-  </form>
-{/if}
-```
 
 ## Best Practices
 
