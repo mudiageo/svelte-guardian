@@ -1,0 +1,15 @@
+{
+	"$schema": "https://next.shadcn-svelte.com/schema.json",
+	"tailwind": {
+		"css": "src/app.css",
+		"baseColor": "slate"
+	},
+	"aliases": {
+		"components": "$components",
+		"utils": "$src/utils",
+		"ui": "$components/ui",
+		"hooks": "$hooks"
+	},
+	"typescript": true,
+	"registry": "https://next.shadcn-svelte.com/registry"
+}
