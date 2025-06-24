@@ -21,7 +21,7 @@ Svelte Guardian stores core user data in the `User` table/collection with the fo
 
 ## Extending the User Model
 
-### Using Prisma (Recommended)
+### Using Prisma 
 
 When using Prisma, extend the User model in `schema.prisma`:
 
@@ -496,7 +496,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   const session = await locals.getSession();
   
   if (!session?.user) {
-    throw redirect(302, '/signin');
+    redirect(302, '/signin');
   }
   
   // Fetch user data with address
@@ -738,7 +738,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   const session = await locals.getSession();
   
   if (!session?.user) {
-    throw redirect(302, '/signin');
+    redirect(302, '/signin');
   }
   
   return {
@@ -987,7 +987,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   const session = await locals.getSession();
   
   if (!session?.user) {
-    throw redirect(302, '/signin');
+    redirect(302, '/signin');
   }
   
   return {};

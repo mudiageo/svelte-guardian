@@ -15,6 +15,9 @@ This document outlines features that are planned for future releases of Svelte G
 - **Multi-tenant Support**: Ability to isolate authentication across different tenants in a single application
 
 ### Security Features
+-** Advanced Route Protection**
+-** Advanced Route Protection**
+-** Advanced Security Configuration**
 
 - **Adaptive MFA**: Context-aware multi-factor authentication based on user behavior and risk patterns
 - **Enhanced Brute Force Protection**: More sophisticated detection and prevention mechanisms
@@ -23,10 +26,10 @@ This document outlines features that are planned for future releases of Svelte G
 
 ### Developer Experience
 
+- **Documentstion in types**: Add documentation in types
 - **CLI Tool**: Command line interface for scaffolding authentication components
 - **UI Component Library**: Ready-to-use UI components for common authentication flows
 - **Testing Helpers**: Utilities for testing authentication in your application
-- **Advanced Database Integration**: More adapters and migration tools
 - **Environment Variable Configuration**: Simplified configuration via environment variables
 
 ## In Progress
@@ -36,13 +39,13 @@ These features are currently under development:
 - **Improved Email Verification Flow**: More reliable email verification with customizable templates
 - **Advanced Session Management**: More control over session lifecycle and security
 - **Enhanced Role-based Access Control**: More granular permissions and hierarchical roles
+- **Custom Email Templates**: Basic customization will supported soon, with a full template editor coming after
 
 ## Partially Implemented
 
 These features exist but have limited functionality in the current version:
 
 - **Two-factor Authentication**: Basic TOTP support is available, but SMS and email methods are planned
-- **Custom Email Templates**: Basic customization is supported, but a full template editor is coming
 - **Rate Limiting**: Basic rate limiting is in place, but more advanced options are coming
 
 ## Request a Feature

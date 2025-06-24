@@ -25,12 +25,8 @@ Svelte Guardian supports different session strategies:
 Database sessions store session information in your database:
 
 ```typescript
-security: {
-  session: {
-    strategy: 'database',
-    maxAge: 30 * 24 * 60 * 60, // 30 days in seconds
-    updateAge: 24 * 60 * 60 // Update session every 24 hours
-  }
+advancee: {
+  sessionStrategy: 'database'
 }
 ```
 
@@ -39,37 +35,14 @@ This is the most flexible and secure option, allowing for immediate session inva
 ### JWT Sessions
 
 JWT sessions store session data in a JSON Web Token:
-
 ```typescript
-security: {
-  session: {
-    strategy: 'jwt',
-    maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
-    secret: process.env.JWT_SECRET
-  }
+advancee: {
+  sessionStrategy: 'jwt'
 }
 ```
+
 
 JWTs are stateless, making them efficient but harder to invalidate before expiration.
-
-### Cookie Sessions
-
-Cookie sessions store minimal session data directly in encrypted cookies:
-
-```typescript
-security: {
-  session: {
-    strategy: 'cookie',
-    maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
-    cookieOptions: {
-      httpOnly: true,
-      sameSite: 'lax',
-      path: '/',
-      secure: process.env.NODE_ENV === 'production'
-    }
-  }
-}
-```
 
 ## Accessing The Session
 
@@ -117,77 +90,6 @@ In client components, access the session through page data:
 {/if}
 ```
 
-## Session Events
-
-Listen for session events in your configuration:
-
-```typescript
-events: {
-  async afterSignIn(user) {
-    console.log(`User signed in: ${user.email}`);
-    // Update user's last login timestamp
-    await updateLastLoginTime(user.id);
-  },
-  
-  async afterSignOut(user) {
-    console.log(`User signed out: ${user.email}`);
-    // Perform any cleanup actions
-  },
-  
-  async afterSessionUpdate(user) {
-    console.log(`Session updated for user: ${user.email}`);
-    // Track session activity
-  }
-}
-```
-
-## Session Expiration and Renewal
-
-Sessions have a limited lifetime controlled by the `maxAge` parameter. Svelte Guardian automatically handles:
-
-1. Session expiration
-2. Session renewal when active
-3. Redirecting expired sessions to the sign-in page
-
-Define when sessions should be updated with the `updateAge` parameter:
-
-```typescript
-security: {
-  session: {
-    strategy: 'database',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-    updateAge: 24 * 60 * 60 // Update session if it's more than 24 hours old
-  }
-}
-```
-
-## Session Security
-
-Enhance session security with these options:
-
-```typescript
-security: {
-  session: {
-    strategy: 'database',
-    maxAge: 30 * 24 * 60 * 60,
-    
-    // Security options
-    cookieOptions: {
-      httpOnly: true, // Prevents JavaScript access
-      sameSite: 'lax', // Protects against CSRF
-      secure: process.env.NODE_ENV === 'production', // Requires HTTPS in production
-      path: '/'
-    },
-    
-    // Prevent session fixation
-    generateNewSessionOnLogin: true,
-    
-    // Track IP address and user agent
-    trackClientInfo: true
-  }
-}
-```
-
 ## Managing Sessions Programmatically
 
 ### Creating a New Session
@@ -216,71 +118,6 @@ await signOut({
 });
 ```
 
-### Getting Multiple Sessions
-
-For user account management features, you might need to retrieve all sessions for a user:
-
-```typescript
-import { getUserSessions, revokeSession } from '$lib/auth';
-
-// In a server route or API endpoint
-export async function GET({ locals }) {
-  const session = await locals.getSession();
-  
-  if (!session?.user) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401
-    });
-  }
-  
-  const userSessions = await getUserSessions(session.user.id);
-  
-  return new Response(JSON.stringify({ sessions: userSessions }));
-}
-
-// Revoke a specific session
-export async function POST({ request, locals }) {
-  const session = await locals.getSession();
-  const data = await request.json();
-  
-  if (!session?.user) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401
-    });
-  }
-  
-  await revokeSession(data.sessionId);
-  
-  return new Response(JSON.stringify({ success: true }));
-}
-```
-
-## Remember Me Functionality
-
-Implement a "Remember Me" option:
-
-```typescript
-// In your signin form handler
-const rememberMe = formData.get('rememberMe') === 'on';
-
-const result = await signIn('credentials', {
-  email,
-  password,
-  remember: rememberMe // Extends session lifetime
-});
-```
-
-Configure different session durations:
-
-```typescript
-security: {
-  session: {
-    strategy: 'database',
-    maxAge: 24 * 60 * 60, // 24 hours by default
-    rememberMeMaxAge: 30 * 24 * 60 * 60 // 30 days when "Remember Me" is checked
-  }
-}
-```
 
 ## Handling Session Data in SvelteKit Layouts
 

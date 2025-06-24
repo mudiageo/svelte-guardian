@@ -1,7 +1,6 @@
 ---
 title: "Rate Limiting"
 description: "Documentation for rate limiting in Svelte Guardian."
-date: "2025-05-22"
 ---
 
 # Rate Limiting

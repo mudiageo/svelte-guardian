@@ -383,7 +383,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
   });
   
   if (!document) {
-    throw error(404, 'Document not found');
+    error(404, 'Document not found');
   }
   
   // Check access rights

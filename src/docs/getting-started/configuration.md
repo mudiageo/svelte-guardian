@@ -16,6 +16,7 @@ To set up Svelte Guardian, you need to initialize it in a server module. The rec
 import { guardianAuth } from 'svelte-guardian';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { PrismaClient } from '@prisma/client';
+import { env } from '$env/dynamic/private';
 
 // Initialize Prisma client
 const prisma = new PrismaClient();
@@ -59,11 +60,7 @@ database: {
   type: 'custom', // 'custom', 'mongodb', 'prisma', etc.
   adapter, // Your database adapter
   
-  // Direct database connection (if not using an adapter)
-  url: process.env.DATABASE_URL,
-  options: {
-    // Database-specific options
-  }
+  // Database-specific options (if not using an adapter) go here
 }
 ```
 
@@ -78,16 +75,6 @@ providers: {
   credentials: {
     allowRegistration: true, // Allow users to register
     requireEmailVerification: true, // Require email verification
-    passwordPolicy: {
-      minLength: 8,
-      requireLetters: true,
-      requireNumbers: true,
-      requireSymbols: true,
-      requireUppercase: true,
-      requireLowercase: true
-    },
-    loginFields: ['email', 'password'], // Fields required for login
-    registrationFields: ['email', 'password', 'name'] // Fields required for registration
   }
 }
 ```
@@ -101,14 +88,12 @@ providers: {
   // ... other providers
   oauth: {
     google: {
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      allowRegistration: true // Allow new users to register via Google
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET
     },
     github: {
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      allowRegistration: true
+      clientId: env.GITHUB_CLIENT_ID,
+      clientSecret: env.GITHUB_CLIENT_SECRET,
     }
   }
 }
@@ -120,20 +105,6 @@ Configure security features:
 
 ```typescript
 security: {
-  // Session configuration
-  session: {
-    strategy: 'database', // 'database', 'jwt', or 'cookie'
-    maxAge: 30 * 24 * 60 * 60, // Session max age in seconds
-    updateAge: 24 * 60 * 60 // Update session every 24 hours
-  },
-  
-  // CSRF protection
-  csrf: {
-    enabled: true,
-    cookieName: 'guardian-csrf',
-    headerName: 'guardian-csrf-token'
-  },
-  
   // Rate limiting
   rateLimiting: {
     enabled: true,
@@ -148,7 +119,7 @@ security: {
     otpLength: 6, // Length of OTP code
     otpExpiration: 15, // OTP validity in minutes
     tokenExpiration: 60, // Link token validity in minutes
-    sendEmailOnRegistration: true // Automatically send verification email
+    sendEmailOnRegistration: true //(TODO) Automatically send verification email
   },
   
   // Password reset
@@ -174,8 +145,8 @@ security: {
     from: 'Your App <your-email@gmail.com>',
     auth: {
       method: 'app-password', // 'password' or 'app-password'
-      user: process.env.EMAIL_USER,
-      appPass: process.env.EMAIL_APP_PASSWORD // or 'pass' for regular password
+      user: env.EMAIL_USER,
+      appPass: env.EMAIL_APP_PASSWORD // or 'pass' for regular password
     },
     
     // Or use SMTP configuration
@@ -185,8 +156,8 @@ security: {
     port: 587,
     secure: false,
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASSWORD
+      user: env.EMAIL_USER,
+      pass: env.EMAIL_PASSWORD
     }
     */
   }
@@ -228,53 +199,6 @@ security: {
       },
       '/': {} // No redirect for homepage
     }
-  }
-}
-```
-
-### Callbacks and Events
-
-Configure custom callbacks and event handlers:
-
-```typescript
-callbacks: {
-  // Called when a user signs in
-  async onSignIn({ user, account, profile }) {
-    // Custom logic, e.g., recording login attempts
-    return true; // Return false to block sign-in
-  },
-  
-  // Called when a new user is created
-  async onUserCreation(user) {
-    // Custom logic, e.g., adding to CRM system
-    return user;
-  },
-  
-  // Called when a JWT is created
-  async onJwtCreation({ token, user }) {
-    // Add custom claims to JWT
-    if (user) {
-      token.role = user.role;
-      token.customData = user.customData;
-    }
-    return token;
-  }
-},
-
-events: {
-  // Triggered after successful sign-in
-  async afterSignIn(user) {
-    console.log(`User signed in: ${user.email}`);
-  },
-  
-  // Triggered after signing out
-  async afterSignOut(user) {
-    console.log(`User signed out: ${user.email}`);
-  },
-  
-  // Triggered after email verification
-  async afterEmailVerification(user) {
-    console.log(`Email verified for user: ${user.email}`);
   }
 }
 ```

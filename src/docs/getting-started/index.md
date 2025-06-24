@@ -40,7 +40,7 @@ yarn add svelte-guardian
 
 ### 1. Database Setup
 
-Svelte Guardian works with various databases through adapters. We recommend using Prisma:
+Svelte Guardian works with various databases through adapters. Here's an edamole with Prisma:
 
 ```bash
 # Install Prisma and the Prisma adapter
@@ -143,8 +143,8 @@ export const { handle, signIn, signOut, middleware, createUser } = await guardia
       from: 'Your App <your-email@gmail.com>',
       auth: {
         method: 'app-password',
-        user: process.env.EMAIL_USER,
-        appPass: process.env.EMAIL_APP_PASSWORD
+        user: env.EMAIL_USER,
+        appPass: env.EMAIL_APP_PASSWORD
       }
     }
   }

@@ -1,7 +1,6 @@
 ---
 title: "Features Overview"
 description: "Overview of authentication and authorization features in Svelte Guardian."
-date: "2025-05-22"
 ---
 
 # Features Overview
@@ -49,12 +48,6 @@ Svelte Guardian provides a comprehensive set of authentication and authorization
 - Customizable rate limits per route
 - Blocking with customizable duration
 
-### Session Management
-- Secure session handling
-- JWT and database session options
-- Session expiration and renewal
-- Cross-site request forgery (CSRF) protection
-
 ## Authorization
 
 ### Role-Based Access Control
@@ -73,7 +66,7 @@ Svelte Guardian provides a comprehensive set of authentication and authorization
 
 ### Adapters
 - Prisma adapter for SQL databases
-- Mongoose adapter for MongoDB
+- Drizxle adapter for Drizzle ORM
 - Custom adapter support for any database
 
 ### Schema
