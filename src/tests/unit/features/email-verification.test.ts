@@ -220,13 +220,13 @@ describe('EmailVerificationService', () => {
 
 	describe('verifyToken', () => {
 		const email = 'test@example.com';
-		const otp = '123456';
+		const token = '123456';
 		const userId = 'user-123';
 
 		it('should return error if user is not registered', async () => {
 			mockAdapter.getUserByEmail.mockResolvedValue(null);
 
-			const result = await emailVerificationService.verifyToken(email, otp);
+			const result = await emailVerificationService.verifyToken(email, token);
 
 			expect(result).toEqual({
 				success: false,
@@ -238,7 +238,7 @@ describe('EmailVerificationService', () => {
 			mockAdapter.getUserByEmail.mockResolvedValue({ id: userId, email });
 			mockAdapter.useVerificationToken.mockResolvedValue(null);
 
-			const result = await emailVerificationService.verifyToken(email, otp);
+			const result = await emailVerificationService.verifyToken(email, token);
 
 			expect(result).toEqual({
 				success: false,
@@ -252,7 +252,7 @@ describe('EmailVerificationService', () => {
 				expires: new Date(Date.now() - 1000) // expired date
 			});
 
-			const result = await emailVerificationService.verifyToken(email, otp);
+			const result = await emailVerificationService.verifyToken(email, token);
 
 			expect(result).toEqual({
 				success: false,
@@ -266,7 +266,7 @@ describe('EmailVerificationService', () => {
 				expires: new Date(Date.now() + 1000) // future date
 			});
 
-			const result = await emailVerificationService.verifyToken(email, otp);
+			const result = await emailVerificationService.verifyToken(email, token);
 
 			expect(result).toBe(true);
 			expect(mockAdapter.updateUser).toHaveBeenCalledWith({
