@@ -119,7 +119,7 @@ describe('EmailVerificationService', () => {
 		it('should generate and send OTP', async () => {
 			const email = 'test@example.com';
 			defaultOptions.method = "otp"
-			const token = await emailVerificationService.initiateEmailVerification(email);
+await emailVerificationService.initiateEmailVerification(email);
 
 			expect(sendEmail).toHaveBeenCalledWith(
 				{
