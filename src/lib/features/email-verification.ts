@@ -78,11 +78,11 @@ export class EmailVerificationService {
 	}
 	
 	async initiateEmailVerification(email: string): Promise<void> {
-		if(this.options?.method === 'otp'){
-		  this.sendOTP(email)
-		}else {
-		  this.sendLink(email)
-		}
+if (this.options?.method === 'otp') {
+  await this.sendOTP(email)
+} else {
+  await this.sendLink(email)
+}
 	}
 
 	async verifyOTP(email: string, otp: string): Promise<{ success: boolean; error?: string }> {
