@@ -97,22 +97,20 @@ if (this.options?.method === 'otp') {
 		});
 		if (!verification) {
 			return { success: false, error: 'OTP does not exist!' };
-		} else if (verification) {
-			const hasExpired = new Date(verification.expires) < new Date();
-
-			if (hasExpired) {
-				return { success: false, error: 'Token has expired!' };
-			}
-			// Mark email as verified and remove verification record
-			await this.adapter.updateUser({
-				id: existingUser.id,
-				email,
-				emailVerified: new Date()
-			});
-
-			return true;
 		}
-		return false;
+		const hasExpired = new Date(verification.expires) < new Date();
+
+		if (hasExpired) {
+			return { success: false, error: 'Token has expired!' };
+		}
+		// Mark email as verified and remove verification record
+		await this.adapter.updateUser({
+			id: existingUser.id,
+			email,
+			emailVerified: new Date()
+		});
+
+		return { success: true };
 	}
 	
 	async verifyToken(email: string, token: string): Promise<{ success: boolean; error?: string }> {
@@ -127,22 +125,20 @@ if (this.options?.method === 'otp') {
 		});
 		if (!verification) {
 			return { success: false, error: 'Invalid token' };
-		} else if (verification) {
-			const hasExpired = new Date(verification.expires) < new Date();
-
-			if (hasExpired) {
-				return { success: false, error: 'Token has expired!' };
-			}
-			// Mark email as verified and remove verification record
-			await this.adapter.updateUser({
-				id: existingUser.id,
-				email,
-				emailVerified: new Date()
-			});
-
-			return true;
 		}
-		return false;
+		const hasExpired = new Date(verification.expires) < new Date();
+
+		if (hasExpired) {
+			return { success: false, error: 'Token has expired!' };
+		}
+		// Mark email as verified and remove verification record
+		await this.adapter.updateUser({
+			id: existingUser.id,
+			email,
+			emailVerified: new Date()
+		});
+
+		return { success: true };
 	}
 }
 
@@ -195,7 +191,7 @@ export const getVerifyEmailActions = (
 
 			try {
 				const verified = await emailService.verifyOTP(email, otp);
-				return { success: verified };
+				return verified;
 			} catch (error) {
 				return { success: false, error: error.message };
 			}
@@ -207,7 +203,7 @@ export const getVerifyEmailActions = (
 
 			try {
 				const verified = await emailService.verifyToken(email, token);
-				return { success: verified };
+				return verified;
 			} catch (error) {
 				return { success: false, error: error.message };
 			}
