@@ -52,14 +52,14 @@ export class EmailVerificationService {
 		return otp;
 	}
 
-	async sendMagicLink(email: string): Promise<string> {
+	async sendLink(email: string): Promise<string> {
 		const token = crypto.randomUUID();
 
 		// Store magic link token in database
 		await this.adapter.createVerificationToken({
 			identifier: email,
 			token,
-			expires: new Date(Date.now() + 15 * 60 * 1000) // 15 minutes
+			expires: new Date(Date.now() + (this.options.tokenExpiration || 15) * 60 * 1000) // 15 minutes
 		});
 
 		// Send magic link via email
@@ -76,6 +76,14 @@ export class EmailVerificationService {
 
 		return token;
 	}
+	
+	async initiateEmailVerification(email: string): Promise<void> {
+		if(this.options?.method === 'otp'){
+		  this.sendOTP(email)
+		}else {
+		  this.sendLink(email)
+		}
+	}
 
 	async verifyOTP(email: string, otp: string): Promise<{ success: boolean; error?: string }> {
 		const existingUser = await this.adapter.getUserByEmail(email);
@@ -89,6 +97,36 @@ export class EmailVerificationService {
 		});
 		if (!verification) {
 			return { success: false, error: 'OTP does not exist!' };
+		} else if (verification) {
+			const hasExpired = new Date(verification.expires) < new Date();
+
+			if (hasExpired) {
+				return { success: false, error: 'Token has expired!' };
+			}
+			// Mark email as verified and remove verification record
+			await this.adapter.updateUser({
+				id: existingUser.id,
+				email,
+				emailVerified: new Date()
+			});
+
+			return true;
+		}
+		return false;
+	}
+	
+	async verifyToken(email: string, token: string): Promise<{ success: boolean; error?: string }> {
+		const existingUser = await this.adapter.getUserByEmail(email);
+
+		if (!existingUser) {
+			return { success: false, error: 'User not registered!' };
+		}
+		const verification = await this.adapter.useVerificationToken({
+			identifier: email,
+			token
+		});
+		if (!verification) {
+			return { success: false, error: 'Invalid token' };
 		} else if (verification) {
 			const hasExpired = new Date(verification.expires) < new Date();
 
@@ -130,17 +168,26 @@ export const getVerifyEmailActions = (
 				return { success: false, error: error.message };
 			}
 		},
-		sendMagicLink: async ({ request }) => {
+		sendLink: async ({ request }) => {
 			const data = await request.formData();
 			const email = data.get('email') as string;
 			try {
-				await emailService.sendMagicLink(email);
+				await emailService.sendLink(email);
 				return { success: true };
 			} catch (error) {
 				return { success: false, error: error.message };
 			}
 		},
-
+		initiateEmailVerification: async ({ request }) => {
+			const data = await request.formData();
+			const email = data.get('email') as string;
+			try {
+				await emailService.initiateEmailVerification(email);
+				return { success: true };
+			} catch (error) {
+				return { success: false, error: error.message };
+			}
+		},
 		verifyOTP: async ({ request }) => {
 			const data = await request.formData();
 			const email = data.get('email') as string;
@@ -148,6 +195,18 @@ export const getVerifyEmailActions = (
 
 			try {
 				const verified = await emailService.verifyOTP(email, otp);
+				return { success: verified };
+			} catch (error) {
+				return { success: false, error: error.message };
+			}
+		},
+		verifyToken: async ({ request }) => {
+			const data = await request.formData();
+			const email = data.get('email') as string;
+			const token = data.get('token') as string;
+
+			try {
+				const verified = await emailService.verifyToken(email, token);
 				return { success: verified };
 			} catch (error) {
 				return { success: false, error: error.message };

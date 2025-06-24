@@ -108,7 +108,7 @@ export const ALL_SERVICES = [
 	'protonmail'
 ] as const;
 type ServicesTuple = typeof ALL_SERVICES;
-type EmailService = ServicesTuple[number];
+export type EmailService = ServicesTuple[number];
 
 //export type EmailService =  'gmail' | 'outlook' | 'yahoo' | 'zoho' | 'office365' | 'aol' | 'protonmail'
 

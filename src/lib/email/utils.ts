@@ -1,8 +1,12 @@
-import {
-	type EmailType,
-	type EmailService,
-	ALL_SERVICES,
+import type {
+	EmailType,
+	EmailService,
 	SmtpServerConfig,
+	EmailProviderConfig,
+	NodemailerServiceConfig
+} from './types';
+import {
+	ALL_SERVICES,
 	EMAIL_SERVICE_CONFIGS
 } from './types';
 
@@ -165,8 +169,6 @@ export function text(params: EmailParams): string {
 
 // Helper function to validate email provider configuration
 export function validateEmailProviderConfig(config: EmailProviderConfig): void {
-	console.log(config);
-	console.log(config.type);
 	switch (config.type) {
 		case 'resend':
 			if (!config.apiKey) {
