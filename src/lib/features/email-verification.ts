@@ -55,15 +55,15 @@ export class EmailVerificationService {
 	async sendLink(email: string): Promise<string> {
 		const token = crypto.randomUUID();
 
-		// Store magic link token in database
+		// Store  link token in database
 		await this.adapter.createVerificationToken({
 			identifier: email,
 			token,
 			expires: new Date(Date.now() + (this.options.tokenExpiration || 15) * 60 * 1000) // 15 minutes
 		});
 
-		// Send magic link via email
-		const verificationLink = `${process.env.APP_URL}/verify-email?token=${token}`;
+		// Send link via email
+		const verificationLink = `${process.env.APP_URL}/verify-email?token=${token}&email=${email}`;
 		await sendEmail(
 			{
 				to: email,
