@@ -1,11 +1,22 @@
-import type { Config } from 'tailwindcss';
+import { fontFamily } from "tailwindcss/defaultTheme";
+import type { Config } from "tailwindcss";
 
-export default {
-	content: ['./src/**/*.{html,js,svelte,ts}'],
-
+const config: Config = {
+	darkMode: ["class"],
+	content: ["./src/**/*.{html,js,svelte,ts}"],
+	safelist: ["dark"],
 	theme: {
-		extend: {}
+		container: {
+			screens: {
+				"2xl": "1400px"
+			}
+		},
+		extend: {
+			fontFamily: {
+				sans: [...fontFamily.sans]
+			},
+		},
 	},
+};
 
-	plugins: []
-} satisfies Config;
+export default config;
