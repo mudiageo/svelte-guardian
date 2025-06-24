@@ -59,13 +59,14 @@ describe('EmailVerificationService', () => {
 			const mockMath = Object.create(global.Math);
 			mockMath.random = () => 0.123456;
 			global.Math = mockMath;
-const emailVerificationService = new EmailVerificationService(
+			
+			const emailVerificationService = new EmailVerificationService(
 			{...defaultOptions, otpLength:10},
 			mockAdapter,
-			mockEmailProvider
-		);
-		const otp =	await emailVerificationService.sendOTP(email);
-expect(otp).toHaveLength(10);
+			mockEmailProvider);
+			const otp =	await emailVerificationService.sendOTP(email);
+			
+			expect(otp).toHaveLength(10);
 			expect(mockAdapter.createVerificationToken).toHaveBeenCalledWith({
 				identifier: email,
 				token: expect.any(String),
@@ -97,12 +98,47 @@ expect(otp).toHaveLength(10);
 		});
 	});
 
-	describe('sendMagicLink', () => {
-		it('should generate and send magic link', async () => {
+	describe('initiateEmailVerification', () => {
+		it('should generate and send verification link', async () => {
+			const email = 'test@example.com';
+			defaultOptions.method = "link"
+			const token = await emailVerificationService.initiateEmailVerification(email);
+
+			expect(sendEmail).toHaveBeenCalledWith(
+				{
+					to: email,
+					subject: 'Verify Your Email',
+					type: 'magicLink',
+					url: expect.stringContaining("mock-uuid")
+				},
+				mockEmailProvider
+			);
+
+		});
+
+		it('should generate and send OTP', async () => {
+			const email = 'test@example.com';
+			defaultOptions.method = "otp"
+			const token = await emailVerificationService.initiateEmailVerification(email);
+
+			expect(sendEmail).toHaveBeenCalledWith(
+				{
+					to: email,
+					subject: 'Your Verification Code',
+					type: 'otp',
+					otp: expect.any(String)
+				},
+				mockEmailProvider
+			);
+		});
+	});
+	
+	describe('sendLink', () => {
+		it('should generate and send verification link', async () => {
 			const email = 'test@example.com';
 			const expectedToken = 'mock-uuid';
 
-			const token = await emailVerificationService.sendMagicLink(email);
+			const token = await emailVerificationService.sendLink(email);
 
 			expect(token).toBe(expectedToken);
 			expect(mockAdapter.createVerificationToken).toHaveBeenCalledWith({
@@ -172,6 +208,65 @@ expect(otp).toHaveLength(10);
 			});
 
 			const result = await emailVerificationService.verifyOTP(email, otp);
+
+			expect(result).toBe(true);
+			expect(mockAdapter.updateUser).toHaveBeenCalledWith({
+				id: userId,
+				email,
+				emailVerified: expect.any(Date)
+			});
+		});
+	});
+
+	describe('verifyToken', () => {
+		const email = 'test@example.com';
+		const otp = '123456';
+		const userId = 'user-123';
+
+		it('should return error if user is not registered', async () => {
+			mockAdapter.getUserByEmail.mockResolvedValue(null);
+
+			const result = await emailVerificationService.verifyToken(email, otp);
+
+			expect(result).toEqual({
+				success: false,
+				error: 'User not registered!'
+			});
+		});
+
+		it('should return error if token is not found', async () => {
+			mockAdapter.getUserByEmail.mockResolvedValue({ id: userId, email });
+			mockAdapter.useVerificationToken.mockResolvedValue(null);
+
+			const result = await emailVerificationService.verifyToken(email, otp);
+
+			expect(result).toEqual({
+				success: false,
+				error: 'Invalid token'
+			});
+		});
+
+		it('should return error if token has expired', async () => {
+			mockAdapter.getUserByEmail.mockResolvedValue({ id: userId, email });
+			mockAdapter.useVerificationToken.mockResolvedValue({
+				expires: new Date(Date.now() - 1000) // expired date
+			});
+
+			const result = await emailVerificationService.verifyToken(email, otp);
+
+			expect(result).toEqual({
+				success: false,
+				error: 'Token has expired!'
+			});
+		});
+
+		it('should verify token successfully and update user', async () => {
+			mockAdapter.getUserByEmail.mockResolvedValue({ id: userId, email });
+			mockAdapter.useVerificationToken.mockResolvedValue({
+				expires: new Date(Date.now() + 1000) // future date
+			});
+
+			const result = await emailVerificationService.verifyToken(email, otp);
 
 			expect(result).toBe(true);
 			expect(mockAdapter.updateUser).toHaveBeenCalledWith({
