@@ -59,8 +59,8 @@ export const emailVerification = {
 	},	
 
 	// Verify link token
-	async verifyToken(token: string): Promise<ApiResponse> {
-		return await apiCall('verify-email/verify-token', 'POST', { token });
+	async verifyToken(email: string, token: string): Promise<ApiResponse> {
+		return await apiCall('verify-email/verify-token', 'POST', { email, token });
 	},
 
 	// Utility function to handle email verification flow
