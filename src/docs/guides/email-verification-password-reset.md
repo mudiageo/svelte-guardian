@@ -1,7 +1,6 @@
 ---
 title: "Email Verification and Password Reset"
 description: "Guide for email verification and password reset in Svelte Guardian."
-date: "2025-05-22"
 ---
 
 # Email Verification and Password Reset

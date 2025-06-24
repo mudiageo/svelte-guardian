@@ -1,7 +1,6 @@
 ---
 title: "Two-Factor Authentication"
 description: "Guide for enabling two-factor authentication in Svelte Guardian."
-date: "2025-05-22"
 ---
 
 # Two-Factor Authentication
