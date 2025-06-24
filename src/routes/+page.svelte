@@ -120,12 +120,3 @@
 		</div>
 	</div>
 </div>>
-
-			<a href="/signin">login </a>
-			<a href="/signup">sign up</a>
-			<a href="/admin">Admin </a>
-			<a href="/protect">Protect</a>
-			<a href="/dashboard">Dashboard</a>
-			<a href="/auth/signout">Signout</a>
-			<a href="/reset-password">Reset password</a>
-			<a href="/verify-email">Verify email</a>
