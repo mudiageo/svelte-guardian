@@ -209,7 +209,7 @@ describe('EmailVerificationService', () => {
 
 			const result = await emailVerificationService.verifyOTP(email, otp);
 
-			expect(result).toBe(true);
+			expect(result).toEqual({ success: true });
 			expect(mockAdapter.updateUser).toHaveBeenCalledWith({
 				id: userId,
 				email,
@@ -268,7 +268,7 @@ describe('EmailVerificationService', () => {
 
 			const result = await emailVerificationService.verifyToken(email, token);
 
-			expect(result).toBe(true);
+			expect(result).toEqual({ success: true });
 			expect(mockAdapter.updateUser).toHaveBeenCalledWith({
 				id: userId,
 				email,
