@@ -41,21 +41,26 @@ export const emailVerification = {
 	// Request OTP verification
 	async requestOTP(email: string): Promise<ApiResponse> {
 		return await apiCall('verify-email/send-otp', 'POST', { email });
+	},	
+	
+	// Request link
+	async requestLink(email: string): Promise<ApiResponse> {
+		return await apiCall('verify-email/send-link', 'POST', { email });
 	},
+
+	// Initiate email verification
+	async initiate(email: string): Promise<ApiResponse> {
+		return await apiCall('verify-email/initiate', 'POST', { email });
+	},	
 
 	// Verify OTP
 	async verifyOTP(email: string, otp: string): Promise<ApiResponse> {
 		return await apiCall('verify-email/verify-otp', 'POST', { email, otp });
-	},
+	},	
 
-	// Request magic link
-	async requestMagicLink(email: string): Promise<ApiResponse> {
-		return await apiCall('verify-email/magic-link', 'POST', { email });
-	},
-
-	// Verify magic link token
-	async verifyMagicLink(token: string): Promise<ApiResponse> {
-		return await apiCall('verify-email/verify-magic-link', 'POST', { token });
+	// Verify link token
+	async verifyToken(email: string, token: string): Promise<ApiResponse> {
+		return await apiCall('verify-email/verify-token', 'POST', { email, token });
 	},
 
 	// Utility function to handle email verification flow
@@ -74,7 +79,7 @@ export const emailVerification = {
 			}
 			return result;
 		} else {
-			return await this.requestMagicLink(email);
+			return await this.requestLink(email);
 		}
 	}
 };

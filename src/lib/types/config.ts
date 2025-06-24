@@ -10,7 +10,7 @@ export interface ProviderConfig {
 	clientSecret?: string;
 }
 export interface EmailVerificationOptions {
-	method: 'otp' | 'magic-link';
+	method: 'otp' | 'link';
 	otpLength?: number;
 	otpExpiration?: number; // in minutes
 	tokenExpiration?: number; // in minutes

@@ -11,10 +11,24 @@ export const getVerifyEmailEndpoints = (
 	emailProviderConfig: EmailProviderConfig
 ) => {
 	return {
+		'POST:/auth/verify-email/initiate': async (event: RequestEvent) => {
+			const updatedEvent = await convertEventRequestBodyFromJsonToFormData(event);
+
+			return getVerifyEmailActions(options, adapter, emailProviderConfig).initiateEmailVerification(updatedEvent);
+		},
+
 		'POST:/auth/verify-email/send-otp': async (event: RequestEvent) => {
 			const updatedEvent = await convertEventRequestBodyFromJsonToFormData(event);
 
 			return getVerifyEmailActions(options, adapter, emailProviderConfig).sendOTP(updatedEvent);
+		},
+
+		'POST:/auth/verify-email/send-link': async (event: RequestEvent) => {
+			const updatedEvent = await convertEventRequestBodyFromJsonToFormData(event);
+
+			return getVerifyEmailActions(options, adapter, emailProviderConfig).sendLink(
+				updatedEvent
+			);
 		},
 
 		'POST:/auth/verify-email/verify-otp': async (event: RequestEvent) => {
@@ -23,12 +37,11 @@ export const getVerifyEmailEndpoints = (
 			return getVerifyEmailActions(options, adapter, emailProviderConfig).verifyOTP(updatedEvent);
 		},
 
-		'POST:/auth/verify-email/magic-link': async (event: RequestEvent) => {
+		'POST:/auth/verify-email/verify-token': async (event: RequestEvent) => {
 			const updatedEvent = await convertEventRequestBodyFromJsonToFormData(event);
 
-			return getVerifyEmailActions(options, adapter, emailProviderConfig).sendMagicLink(
-				updatedEvent
-			);
-		}
+			return getVerifyEmailActions(options, adapter, emailProviderConfig).verifyToken(updatedEvent);
+		},
+		
 	};
 };
