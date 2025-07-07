@@ -37,7 +37,7 @@
 	</div>
 
 	<div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-		<div class="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10 dark:bg-gray-800">
+		<div class="bg-white px-4 py-8 shadow-sm sm:rounded-lg sm:px-10 dark:bg-gray-800">
 			{#if error}
 				<div class="mb-4 rounded-md bg-red-50 p-4 text-red-700 dark:bg-red-900 dark:text-red-100">
 					{error}
@@ -58,7 +58,7 @@
 						name="name"
 						bind:value={formData.name}
 						required
-						class="focus:border-primary-500 focus:ring-primary-500 mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+						class="focus:border-primary-500 focus:ring-primary-500 mt-1 block w-full rounded-md border-gray-300 shadow-xs dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 					/>
 				</div>
 
@@ -72,7 +72,7 @@
 						name="email"
 						bind:value={formData.email}
 						required
-						class="focus:border-primary-500 focus:ring-primary-500 mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+						class="focus:border-primary-500 focus:ring-primary-500 mt-1 block w-full rounded-md border-gray-300 shadow-xs dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 					/>
 				</div>
 
@@ -87,7 +87,7 @@
 						bind:value={formData.password}
 						required
 						minlength="8"
-						class="focus:border-primary-500 focus:ring-primary-500 mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+						class="focus:border-primary-500 focus:ring-primary-500 mt-1 block w-full rounded-md border-gray-300 shadow-xs dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 					/>
 				</div>
 
@@ -105,7 +105,7 @@
 						bind:value={formData.confirmPassword}
 						required
 						minlength="8"
-						class="focus:border-primary-500 focus:ring-primary-500 mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+						class="focus:border-primary-500 focus:ring-primary-500 mt-1 block w-full rounded-md border-gray-300 shadow-xs dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 					/>
 				</div>
 
@@ -126,7 +126,7 @@
 					<button
 						type="button"
 						onclick={() => signIn('google', { callbackUrl: '/auth/onboarding' })}
-						class="flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+						class="flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-xs hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
 					>
 						<svg class="mr-2 h-5 w-5" viewBox="0 0 24 24">
 							<path
