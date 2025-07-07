@@ -14,6 +14,7 @@
 
 	let open = $state(false);
 	let searchResults: Array<{ title: string; path: string }> = $state([]);
+
 	let fuse: Fuse<any>;
 
 	onMount(() => {
@@ -25,12 +26,12 @@
 	});
 
 	function handleSearch(query: string) {
-		if (!query) {
-			searchResults = [];
-			return;
-		}
-		searchResults = fuse.search(query).map((result) => result.item);
-	}
+	        if (!query) {
+                       searchResults = [];
+                       return;
+               }
+               searchResults = fuse.search(query).map((result) => result.item);
+       }
 
 	function handleSelect(path: string) {
 		open = false;
@@ -62,9 +63,16 @@
 
 <Dialog.Root bind:open>
 	<Dialog.Content class="sm:max-w-[850px] p-0">
+		{#each searchResults as result}
+						<div class="truncate">
+							<span class="font-medium">{result.title}</span>
+							<span class="ml-2 text-sm text-muted-foreground truncate">{result.path}</span>
+						</div>
+					
+				{/each}
 		<Command.Root class="rounded-lg border shadow-md">
 			<Command.Input placeholder="Search documentation..." oninput={(e) => handleSearch(e.currentTarget.value)} />
-			<Command.Empty>No results found.</Command.Empty>
+		{#if searchResults}
 			<Command.Group>
 				{#each searchResults as result}
 					<Command.Item onSelect={() => handleSelect(result.path)} class="cursor-pointer">
@@ -75,6 +83,9 @@
 					</Command.Item>
 				{/each}
 			</Command.Group>
+			{:else}
+			<Command.Empty>No results found.</Command.Empty>
+			{/if}
 		</Command.Root>
 	</Dialog.Content>
 </Dialog.Root>

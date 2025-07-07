@@ -46,11 +46,11 @@
 
 <div class="relative min-h-screen">
 	<!-- Hero Section -->
-	<div class="relative overflow-hidden bg-slate-900 dark:bg-slate-950">
-		<div class="absolute inset-0 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20 opacity-50"></div>
+	<div class="relative overflow-hidden bg-white dark:bg-slate-950">
+		<div class="absolute inset-0 dark:bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20 opacity-50"></div>
 		<div class="container relative mx-auto px-4 py-24 sm:px-6 lg:px-8">
 			<div class="mx-auto max-w-4xl text-center">
-				<h1 class="bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 bg-clip-text text-5xl font-extrabold tracking-tight text-transparent sm:text-6xl xl:text-7xl">
+				<h1 class="bg-gradient-to-r from-slate-800 dark:from-indigo-200 dark:via-purple-200 to-pink-200 bg-clip-text text-5xl font-extrabold tracking-tight text-transparent sm:text-6xl xl:text-7xl">
 					Svelte Guardian
 				</h1>
 				<p class="mt-6 text-xl text-slate-300 sm:text-2xl">
@@ -86,7 +86,7 @@
 						<Card.Root class="flex flex-col">
 							<Card.Header>
 								<div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-500 dark:bg-indigo-500/20">
-									<svelte:component this={feature.icon} class="h-6 w-6" />
+									<feature.icon class="h-6 w-6" />
 								</div>
 								<Card.Title>{feature.title}</Card.Title>
 								<Card.Description>{feature.description}</Card.Description>
@@ -119,4 +119,4 @@
 			</div>
 		</div>
 	</div>
-</div>>
+</div>

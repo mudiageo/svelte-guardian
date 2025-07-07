@@ -66,9 +66,15 @@
 			<div class="container">
 				<div class="flex flex-col md:flex-row justify-between items-center gap-4">
 					<div class="text-sm text-muted-foreground">
-						© {new Date().getFullYear()} Svelte Guardian. All rights reserved.
+						©{new Date().getFullYear()} Mudiaga Arharhire. All rights reserved.
 					</div>
 					<div class="flex gap-6">
+						<a
+							href="/"
+							class="text-sm text-muted-foreground hover:text-foreground"
+						>
+							Home
+						</a>
 						<a
 							href={GITHUB_REPO}
 							class="text-sm text-muted-foreground hover:text-foreground"

@@ -46,9 +46,6 @@
 					href={page.data.next.path}
 					class="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
 					>
-			
-					
-				>
 					{page.data.next.title} →
 				</a>
 			{:else}
@@ -60,7 +57,7 @@
 				
 	</div>
 	
-	<div class=" lg:block">
+	<div class="hidden lg:block">
 		<TableOfContents {headings} />
 	</div>
 </div>
