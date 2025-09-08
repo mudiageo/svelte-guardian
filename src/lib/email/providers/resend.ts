@@ -1,4 +1,4 @@
-import { EmailOptions, EmailProvider } from '../types';
+import type { EmailOptions, EmailProvider } from '../types';
 import { html, text } from '../utils';
 
 export class ResendProvider implements EmailProvider {
