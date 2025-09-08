@@ -35,8 +35,22 @@ export interface DrizzleConfig extends BaseDatabaseConfig {
 	schema?: any;
 }
 
+export interface MongoDBConfig extends BaseDatabaseConfig {
+	type: 'mongodb';
+	client: any;
+	databaseName?: string;
+}
+
+export interface SupabaseConfig extends BaseDatabaseConfig {
+	type: 'supabase';
+	url: string;
+	secret: string;
+}
+
 // Union type for all database configurations
 export type DatabaseConfig =
 	| PrismaConfig
 	| DrizzleConfig
+	| MongoDBConfig
+	| SupabaseConfig
 	| CustomAdapterConfig;
