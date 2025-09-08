@@ -1,6 +1,6 @@
 import type { User } from './user';
 import type { LoggerConfig } from '../core/logger';
-import type { DatabaseConfig } from '../database';
+import type { DatabaseConfig } from './database';
 import type { RateLimitingConfig } from '../features/rate-limiting';
 import type { EmailProviderConfig } from '../email/types';
 

@@ -1,47 +1,6 @@
 import type { Adapter } from '@auth/core/adapters';
 import { optionalImport } from './utils';
-import { PrismaClient } from '@prisma/client'
-
-// Comprehensive database provider types
-export type DatabaseProviderType =
-	| 'prisma'
-	| 'drizzle'
-	| 'mongodb'
-	| 'postgres'
-	| 'mysql'
-	| 'sqlite'
-	| 'supabase'
-	| 'custom';
-
-// Abstract database configuration interface
-export interface BaseDatabaseConfig {
-	type: DatabaseProviderType;
-	connectionString?: string;
-	ssl?: boolean;
-}
-
-// Specific database provider configurations
-export interface CustomAdapterConfig extends BaseDatabaseConfig {
-	type: 'custom';
-	adapter: Adapter;
-}
-export interface PrismaConfig extends BaseDatabaseConfig {
-	type: 'prisma';
-	client: PrismaClient;
-}
-
-export interface DrizzleConfig extends BaseDatabaseConfig {
-	type: 'drizzle';
-	client: any;
-	schema?: any;
-}
-
-// Union type for all database configurations
-export type DatabaseConfig =
-	| PrismaConfig
-	| DrizzleConfig
-	| CustomAdapterConfig;
-
+import type { DatabaseConfig, DrizzleConfig, MongoDBConfig, SupabaseConfig } from './types/database'
 // Adapter creation utility
 export const createDatabaseAdapter = async (
 	config: DatabaseConfig | undefined
@@ -62,7 +21,7 @@ export const createDatabaseAdapter = async (
 		case 'mongodb': {
 			const { MongoDBAdapter } = await optionalImport('@auth/mongodb-adapter');
 			return MongoDBAdapter(config.client, {
-				databaseName: (config as MongoDBConfig).database
+				databaseName: (config as MongoDBConfig).databaseName
 			});
 		}
 		case 'postgres': {
@@ -80,8 +39,8 @@ export const createDatabaseAdapter = async (
 		case 'supabase': {
 			const { SupabaseAdapter } = await optionalImport('@auth/supabase-adapter');
 			return SupabaseAdapter(
-				(config as SupabaseConfig).client,
-				(config as SupabaseConfig).serviceRole
+				(config as SupabaseConfig).url,
+				(config as SupabaseConfig).secret
 			);
 		}
 		default:
